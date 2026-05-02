@@ -799,7 +799,7 @@ namespace GatherChill.Ui.RouteWindowTabs
                 }
             }
 
-            using (var pictoDraw = PictoService.Draw())
+            using (var pictoDraw = PctService.Draw())
             {
                 if (pictoDraw == null)
                     return;
@@ -849,7 +849,7 @@ namespace GatherChill.Ui.RouteWindowTabs
                             uint drawColor = isSelected ? selectedColor : nodeColor;
                             if (C.UseVfx)
                             {
-                                PictoService.VfxRenderer.AddCircle($"{nodeLoc.Position.X} {nodeLoc.Position.Z}", nodeLoc.Position.ToVector3(), 3, Utils.FromUintABGR(drawColor));
+                                PctService.VfxRenderer.AddCircle($"{nodeLoc.Position.X} {nodeLoc.Position.Z}", nodeLoc.Position.ToVector3(), 3, Utils.FromUintABGR(drawColor));
                             }
                             else
                             {

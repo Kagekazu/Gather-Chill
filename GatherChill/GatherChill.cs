@@ -59,7 +59,7 @@ public sealed class GatherChill : IDalamudPlugin
         P = this;
         ECommonsMain.Init(pi, P, ECommons.Module.DalamudReflector, ECommons.Module.ObjectFunctions);
         new ECommons.Schedulers.TickScheduler(Load);
-        PictoService.Initialize(pi);
+        PctService.Initialize(pi);
     }
 
     public void Load()
@@ -120,7 +120,7 @@ public sealed class GatherChill : IDalamudPlugin
         ECommonsMain.Dispose();
         Safe(TextAdvancedManager.UnlockTA);
         Safe(YesAlreadyManager.Unlock);
-        PictoService.Dispose();
+        PctService.Dispose();
     }
 
     private void OnCommand(string command, string args)

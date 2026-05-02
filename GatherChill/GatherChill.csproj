@@ -22,13 +22,13 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ECommons" Version="3.1.0.10" />
-    <PackageReference Include="Pictomancy" Version="0.0.2" />
+    <PackageReference Include="ECommons" Version="3.2.0.15" />
+    <PackageReference Include="Pictomancy" Version="1.0.3" />
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="DalamudPackager" Version="14.0.1" />
+    <PackageReference Update="DalamudPackager" Version="15.0.0" />
     <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39" />
   </ItemGroup>
 
