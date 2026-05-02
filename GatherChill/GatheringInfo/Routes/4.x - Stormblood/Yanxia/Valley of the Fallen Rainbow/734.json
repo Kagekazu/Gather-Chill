@@ -1,0 +1,24 @@
+{
+  "routeId": 734,
+  "territoryId": 614,
+  "zoneName": "Yanxia",
+  "placeName": "Valley of the Fallen Rainbow",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33344,
+    33345,
+    33346,
+    33347,
+    33348,
+    33349
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,24 @@
+{
+  "routeId": 810,
+  "territoryId": 612,
+  "zoneName": "The Fringes",
+  "placeName": "Vira Nilya",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33867,
+    33868,
+    33869,
+    33870,
+    33871,
+    33872
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

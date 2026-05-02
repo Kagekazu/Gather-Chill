@@ -1,0 +1,24 @@
+{
+  "routeId": 738,
+  "territoryId": 402,
+  "zoneName": "Azys Lla",
+  "placeName": "The Pappus Tree",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33368,
+    33369,
+    33370,
+    33371,
+    33372,
+    33373
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

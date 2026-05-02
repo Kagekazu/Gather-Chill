@@ -1,0 +1,98 @@
+{
+  "routeId": 934,
+  "territoryId": 961,
+  "zoneName": "Elpis",
+  "placeName": "Lethe",
+  "expansionId": 4,
+  "gatheringJobId": 16,
+  "levelRequirement": 90,
+  "nodeIds": [
+    34419
+  ],
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 34419,
+      "locations": [
+        {
+          "position": {
+            "x": 413.88,
+            "y": 139.8586,
+            "z": -159.1732
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 80,
+            "fan_EndAngle": 204,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 80,
+            "fan_EndAngle": 204,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": 477.1306,
+            "y": 139.7597,
+            "z": -134.0291
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 253,
+            "fan_EndAngle": 13,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 253,
+            "fan_EndAngle": 13,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": 426.2692,
+            "y": 139.4495,
+            "z": -187.277
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 34,
+            "fan_EndAngle": 148,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 34,
+            "fan_EndAngle": 148,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-29 17:40:55",
+  "timedNode": false
+}

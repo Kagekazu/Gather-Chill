@@ -1,0 +1,22 @@
+{
+  "routeId": 21,
+  "territoryId": 148,
+  "zoneName": "Central Shroud",
+  "placeName": "Bentbranch",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 15,
+  "nodeIds": [
+    30037,
+    30039,
+    30040,
+    30041
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

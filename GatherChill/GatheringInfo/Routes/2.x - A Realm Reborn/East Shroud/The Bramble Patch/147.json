@@ -1,0 +1,22 @@
+{
+  "routeId": 147,
+  "territoryId": 152,
+  "zoneName": "East Shroud",
+  "placeName": "The Bramble Patch",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 50,
+  "nodeIds": [
+    30385,
+    30386,
+    30387,
+    30388
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

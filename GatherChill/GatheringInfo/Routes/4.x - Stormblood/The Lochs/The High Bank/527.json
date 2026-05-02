@@ -1,0 +1,19 @@
+{
+  "routeId": 527,
+  "territoryId": 621,
+  "zoneName": "The Lochs",
+  "placeName": "The High Bank",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32275
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,98 @@
+{
+  "routeId": 608,
+  "territoryId": 818,
+  "zoneName": "The Tempest",
+  "placeName": "The Caliban Gorge",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    32682
+  ],
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 32682,
+      "locations": [
+        {
+          "position": {
+            "x": -274.5657,
+            "y": 272.2622,
+            "z": 6.350259
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 10,
+            "fan_EndAngle": 125,
+            "fan_DistanceMin": 2.2,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 10,
+            "fan_EndAngle": 125,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": -282.1846,
+            "y": 271.2027,
+            "z": -5.627921
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 93,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 93,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": -269.0729,
+            "y": 272.2177,
+            "z": 21.31801
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 15,
+            "fan_EndAngle": 115,
+            "fan_DistanceMin": 2.2,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 15,
+            "fan_EndAngle": 115,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-29 18:20:54",
+  "timedNode": false
+}

@@ -1,0 +1,19 @@
+{
+  "routeId": 522,
+  "territoryId": 614,
+  "zoneName": "Yanxia",
+  "placeName": "The Glittering Basin",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32270
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

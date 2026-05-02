@@ -1,0 +1,24 @@
+{
+  "routeId": 764,
+  "territoryId": 402,
+  "zoneName": "Azys Lla",
+  "placeName": "Gamma Quadrant",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33594,
+    33595,
+    33596,
+    33597,
+    33598,
+    33599
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

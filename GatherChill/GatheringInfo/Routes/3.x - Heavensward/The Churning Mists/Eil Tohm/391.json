@@ -1,0 +1,24 @@
+{
+  "routeId": 391,
+  "territoryId": 400,
+  "zoneName": "The Churning Mists",
+  "placeName": "Eil Tohm",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31694,
+    31695,
+    31696,
+    31697,
+    31698,
+    31699
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

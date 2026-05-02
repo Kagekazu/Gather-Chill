@@ -1,0 +1,24 @@
+{
+  "routeId": 811,
+  "territoryId": 612,
+  "zoneName": "The Fringes",
+  "placeName": "Virdjala",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33873,
+    33874,
+    33875,
+    33876,
+    33877,
+    33878
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

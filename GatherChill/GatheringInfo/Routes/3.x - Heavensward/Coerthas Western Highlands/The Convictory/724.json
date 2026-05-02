@@ -1,0 +1,24 @@
+{
+  "routeId": 724,
+  "territoryId": 397,
+  "zoneName": "Coerthas Western Highlands",
+  "placeName": "The Convictory",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33289,
+    33290,
+    33291,
+    33292,
+    33293,
+    33294
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

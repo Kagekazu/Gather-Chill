@@ -1,0 +1,19 @@
+{
+  "routeId": 342,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "Vundu Ok\u0027 Bendu",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31495
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

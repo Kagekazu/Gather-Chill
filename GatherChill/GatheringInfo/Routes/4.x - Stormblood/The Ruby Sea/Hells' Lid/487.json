@@ -1,0 +1,24 @@
+{
+  "routeId": 487,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "Hells\u0027 Lid",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32135,
+    32136,
+    32137,
+    32138,
+    32139,
+    32140
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

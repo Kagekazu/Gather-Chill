@@ -1,0 +1,98 @@
+{
+  "routeId": 1027,
+  "territoryId": 1189,
+  "zoneName": "Yak T\u0027el",
+  "placeName": "The Ja Tiika Heartland",
+  "expansionId": 5,
+  "gatheringJobId": 17,
+  "levelRequirement": 100,
+  "nodeIds": [
+    34987
+  ],
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 34987,
+      "locations": [
+        {
+          "position": {
+            "x": 756.4184,
+            "y": -168.2509,
+            "z": 641.4858
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 307,
+            "fan_EndAngle": 85,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0.94
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 307,
+            "fan_EndAngle": 85,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": 797.704,
+            "y": -144.9786,
+            "z": 658.0242
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 131,
+            "fan_EndAngle": 259,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0.96
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 131,
+            "fan_EndAngle": 259,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0.4
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": 748.801,
+            "y": -174.2342,
+            "z": 698.6124
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 193,
+            "fan_EndAngle": 328,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 193,
+            "fan_EndAngle": 328,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev, Ice",
+  "lastUpdated": "2025-12-28 17:49:46",
+  "timedNode": false
+}

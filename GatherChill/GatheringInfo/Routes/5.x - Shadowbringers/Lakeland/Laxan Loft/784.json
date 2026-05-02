@@ -1,0 +1,21 @@
+{
+  "routeId": 784,
+  "territoryId": 813,
+  "zoneName": "Lakeland",
+  "placeName": "Laxan Loft",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33637,
+    33638,
+    33639
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

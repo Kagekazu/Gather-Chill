@@ -1,0 +1,24 @@
+{
+  "routeId": 613,
+  "territoryId": 816,
+  "zoneName": "Il Mheg",
+  "placeName": "The Church at Dammroen Field",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    32697,
+    32698,
+    32699,
+    32700,
+    32701,
+    32702
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

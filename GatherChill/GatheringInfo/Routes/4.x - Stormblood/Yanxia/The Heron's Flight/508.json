@@ -1,0 +1,24 @@
+{
+  "routeId": 508,
+  "territoryId": 614,
+  "zoneName": "Yanxia",
+  "placeName": "The Heron\u0027s Flight",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32206,
+    32207,
+    32208,
+    32209,
+    32210,
+    32211
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

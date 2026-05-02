@@ -1,0 +1,24 @@
+{
+  "routeId": 729,
+  "territoryId": 620,
+  "zoneName": "The Peaks",
+  "placeName": "Hidden Tear",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33319,
+    33320,
+    33321,
+    33322,
+    33323,
+    33324
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

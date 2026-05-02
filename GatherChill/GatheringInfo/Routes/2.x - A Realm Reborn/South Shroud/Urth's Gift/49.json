@@ -1,0 +1,22 @@
+{
+  "routeId": 49,
+  "territoryId": 153,
+  "zoneName": "South Shroud",
+  "placeName": "Urth\u0027s Gift",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 40,
+  "nodeIds": [
+    30111,
+    30112,
+    30113,
+    30503
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

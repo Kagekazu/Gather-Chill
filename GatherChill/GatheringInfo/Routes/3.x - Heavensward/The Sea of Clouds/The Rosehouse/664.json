@@ -1,0 +1,24 @@
+{
+  "routeId": 664,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "The Rosehouse",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 55,
+  "nodeIds": [
+    32887,
+    32888,
+    32889,
+    32890,
+    32891,
+    32892
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}

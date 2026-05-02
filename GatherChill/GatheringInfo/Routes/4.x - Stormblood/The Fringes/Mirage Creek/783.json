@@ -1,0 +1,21 @@
+{
+  "routeId": 783,
+  "territoryId": 612,
+  "zoneName": "The Fringes",
+  "placeName": "Mirage Creek",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 65,
+  "nodeIds": [
+    33634,
+    33635,
+    33636
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,22 @@
+{
+  "routeId": 47,
+  "territoryId": 153,
+  "zoneName": "South Shroud",
+  "placeName": "Upper Paths",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 25,
+  "nodeIds": [
+    30105,
+    30106,
+    30107,
+    30461
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,24 @@
+{
+  "routeId": 519,
+  "territoryId": 622,
+  "zoneName": "The Azim Steppe",
+  "placeName": "Nhaama\u0027s Retreat",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32262,
+    32263,
+    32264,
+    32265,
+    32266,
+    32267
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

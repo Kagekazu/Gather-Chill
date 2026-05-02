@@ -1,0 +1,22 @@
+{
+  "routeId": 186,
+  "territoryId": 139,
+  "zoneName": "Upper La Noscea",
+  "placeName": "Bronze Lake",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 45,
+  "nodeIds": [
+    30524,
+    30525,
+    30526,
+    30527
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

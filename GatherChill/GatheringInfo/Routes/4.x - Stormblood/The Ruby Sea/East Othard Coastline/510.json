@@ -1,0 +1,24 @@
+{
+  "routeId": 510,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "East Othard Coastline",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32218,
+    32219,
+    32220,
+    32221,
+    32222,
+    32223
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

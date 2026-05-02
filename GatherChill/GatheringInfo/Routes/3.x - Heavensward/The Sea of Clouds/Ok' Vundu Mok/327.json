@@ -1,0 +1,21 @@
+{
+  "routeId": 327,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "Ok\u0027 Vundu Mok",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31468,
+    31471,
+    31473
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

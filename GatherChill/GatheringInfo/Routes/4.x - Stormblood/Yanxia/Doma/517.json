@@ -1,0 +1,24 @@
+{
+  "routeId": 517,
+  "territoryId": 614,
+  "zoneName": "Yanxia",
+  "placeName": "Doma",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32255,
+    32256,
+    32257,
+    32258,
+    32259,
+    32260
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,24 @@
+{
+  "routeId": 356,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "Voor Sian Siran",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31400,
+    31401,
+    31402,
+    31403,
+    31404,
+    31405
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

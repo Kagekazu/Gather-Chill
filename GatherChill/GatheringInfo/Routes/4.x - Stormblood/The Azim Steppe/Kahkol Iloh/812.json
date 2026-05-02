@@ -1,0 +1,24 @@
+{
+  "routeId": 812,
+  "territoryId": 622,
+  "zoneName": "The Azim Steppe",
+  "placeName": "Kahkol Iloh",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33879,
+    33880,
+    33881,
+    33882,
+    33883,
+    33884
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

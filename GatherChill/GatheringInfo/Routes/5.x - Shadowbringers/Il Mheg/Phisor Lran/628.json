@@ -1,0 +1,19 @@
+{
+  "routeId": 628,
+  "territoryId": 816,
+  "zoneName": "Il Mheg",
+  "placeName": "Phisor Lran",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    32767
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

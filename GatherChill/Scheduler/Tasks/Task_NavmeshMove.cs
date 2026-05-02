@@ -3,7 +3,8 @@ using ECommons.GameHelpers;
 using ECommons.Logging;
 using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using GatherChill.Utilities;
+using GatherChill.Utilities.Tools;
+using GatherChill.Utilities.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,11 +25,7 @@ namespace GatherChill.Scheduler.Tasks
             bool isFlying = Svc.Condition[ConditionFlag.InFlight];
             bool mounted = Player.Mounted;
 
-            // Config versions to change later when I actually do this better...
-            float minMountDistance = 50;
-            float dismountDistance = 15;
             bool JumpIfStuck = true;
-            bool useMount = true;
 
             if (!P.navmesh.Installed)
                 return true;
@@ -54,7 +51,7 @@ namespace GatherChill.Scheduler.Tasks
                 {
                     // We should never be not mounting here, so going to just stop the current navmesh and restart it
                     if (EzThrottler.Throttle("Emergency Navmesh Stop | Fly"))
-                        P.navmesh.Stop();
+                        P.navmesh.PathStop();
 
                     return false;
                 }
@@ -68,7 +65,7 @@ namespace GatherChill.Scheduler.Tasks
                 {
                     if (EzThrottler.Throttle("Telling navmesh to stop"))
                     {
-                        P.navmesh.Stop();
+                        P.navmesh.PathStop();
                     }
                 }
 
@@ -109,6 +106,7 @@ namespace GatherChill.Scheduler.Tasks
                     if (EzThrottler.Throttle("Commence Navmesh Movement"))
                     {
                         P.navmesh.SetTolerance(0.25f);
+                        IceLogging.DestinationLogs.Log(pos);
                         P.navmesh.PathfindAndMoveTo(pos, true);
                     }
                 }
@@ -168,7 +166,7 @@ namespace GatherChill.Scheduler.Tasks
                     if (EzThrottler.Throttle("Telling navmesh to stop"))
                     {
                         PluginLog.Debug("We're within stopping distance, so stopping navmesh");
-                        P.navmesh.Stop();
+                        P.navmesh.PathStop();
                     }
                 }
             }
@@ -209,6 +207,7 @@ namespace GatherChill.Scheduler.Tasks
                     {
                         P.navmesh.SetTolerance(0.25f);
                         PluginLog.Debug("We're setting the tolerance to 0.25f here");
+                        IceLogging.DestinationLogs.Log(pos);
                         P.navmesh.PathfindAndMoveTo(pos, false);
                     }
                 }
@@ -256,7 +255,7 @@ namespace GatherChill.Scheduler.Tasks
                     // Second attempt: stop navmesh after jump had time to execute
                     if (EzThrottler.Throttle("Stuck - stopping navmesh", 1000))
                     {
-                        P.navmesh.Stop();
+                        P.navmesh.PathStop();
                         _stuckAttempts = 0; // Reset for next time
                         _lastPositionChange = DateTime.Now;
                     }

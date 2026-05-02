@@ -1,0 +1,22 @@
+{
+  "routeId": 159,
+  "territoryId": 140,
+  "zoneName": "Western Thanalan",
+  "placeName": "Horizon\u0027s Edge",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 15,
+  "nodeIds": [
+    30433,
+    30434,
+    30435,
+    30436
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -3,12 +3,19 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
+using ECommons.ExcelServices;
 using ECommons.GameHelpers;
 using ECommons.UIHelpers.AddonMasterImplementations;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using GatherChill.Enums;
 using GatherChill.Scheduler;
 using GatherChill.Utilities;
+using GatherChill.Utilities.GatheringHelpers;
+using GatherChill.Utilities.Tools;
 using Lumina.Excel.Sheets;
 using System.Collections.Generic;
+using System.Text;
+using static GatherChill.Utilities.Tools.IceLogging;
 
 namespace GatherChill.Ui;
 
@@ -30,7 +37,40 @@ internal class DebugWindow : Window
 
     public override void Draw()
     {
-        DrawGatherPointTable();
+        if (ImGui.BeginTabBar("Gather & Chill: Debug Tabs"))
+        {
+            if (ImGui.BeginTabItem("Task Info"))
+            {
+                TaskInfoDetails();
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("Log Viewer"))
+            {
+                Ui_LogViewer.Draw_Debug();
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("Destination Log"))
+            {
+                DestinationLogViewer();
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("Gathering Table"))
+            {
+                DrawGatherPointTable();
+                ImGui.EndTabItem();
+            }
+
+            if (ImGui.BeginTabItem("Buff Info"))
+            {
+                BuffViewer();
+                ImGui.EndTabItem();
+            }
+
+            ImGui.EndTabBar();
+        }
     }
 
     public void DrawGatherPointTable()
@@ -137,6 +177,98 @@ internal class DebugWindow : Window
             }
 
             ImGui.EndTable();
+        }
+    }
+
+    public void TaskInfoDetails()
+    {
+        ImGui.Text($"Running task: {P.taskManager.NumQueuedTasks != 0} | Amount of queue'd task: {P.taskManager.NumQueuedTasks}");
+        string currentTask = P.taskManager.CurrentTask?.Name ?? "";
+        ImGui.Text($"Current task running: {currentTask}");
+        ImGui.Text($"Current State: {SchedulerMain.State}");
+        ImGui.Text($"ItemId set: {SchedulerMain.ItemId}");
+        ImGui.Text($"Task Count: {P.taskManager.Tasks.Count}");
+    }
+
+    private static void DestinationLogViewer()
+    {
+        ImGuiTableFlags flags = ImGuiTableFlags.RowBg |
+                                ImGuiTableFlags.Borders |
+                                ImGuiTableFlags.ScrollY |
+                                ImGuiTableFlags.SizingFixedFit;
+
+        if (ImGui.BeginTable("Destination Log Viewer", 5, flags))
+        {
+            ImGui.TableSetupColumn("Timestamp");
+            ImGui.TableSetupColumn("Start");
+            ImGui.TableSetupColumn("Destination");
+            ImGui.TableSetupColumn("Distance");
+
+            ImGui.TableHeadersRow();
+
+            var filteredLogs = DestinationLogs.Logs.AsEnumerable();
+            var entryNumber = 0;
+
+            foreach (var log in filteredLogs.OrderByDescending(l => l.Timestamp))
+            {
+                ImGui.TableNextRow();
+
+                ImGui.PushID($"{log.PlayerDestination}_{entryNumber}");
+
+                ImGui.TableSetColumnIndex(0);
+                ImGui_Util.Table_VertCenterText(log.Timestamp.ToString("HH:mm:ss"));
+
+                ImGui.TableNextColumn();
+                ImGui_Util.Table_VertCenterText($"X: {log.PlayerStart.X:N2}, Y: {log.PlayerStart.Y:N2}, Z: {log.PlayerStart.Z:N2}");
+
+                ImGui.TableNextColumn();
+                ImGui_Util.Table_VertCenterText($"X: {log.PlayerDestination.X:N2}, Y: {log.PlayerDestination.Y:N2}, Z: {log.PlayerDestination.Z:N2}");
+
+                ImGui.TableNextColumn();
+                ImGui_Util.Table_VertCenterText($"{log.Distance}");
+
+                ImGui.TableNextColumn();
+                if (ImGui.Button("Copy Info"))
+                {
+                    var clipboardText = new StringBuilder();
+                    clipboardText.AppendLine($"Start: X: {log.PlayerStart.X:N2}, Y: {log.PlayerStart.Y:N2}, Z: {log.PlayerStart.Z:N2}");
+                    clipboardText.Append($"End: X: {log.PlayerDestination.X:N2}, Y: {log.PlayerDestination.Y:N2}, Z: {log.PlayerDestination.Z:N2}");
+                    ImGui.SetClipboardText($"{clipboardText}");
+                    Notify.Success("Log copied to clipbard");
+                }
+                ImGui.PopID();
+
+                entryNumber += 1;
+            }
+
+            ImGui.EndTable();
+        }
+    }
+
+    private void BuffViewer()
+    {
+        var gatherDict = Gather_Util.GathActionDict[GatherBuffId.GivingLand];
+
+        ImGui.Text($"Giving land CD: MIN: {BuffCD(gatherDict.ClassAction[Job.MIN])} | BTN: {BuffCD(gatherDict.ClassAction[Job.BTN]):N1}");
+    }
+
+    private unsafe float BuffCD(uint actionId)
+    {
+        // Get the recast time for an action
+        var recastGroup = ActionManager.Instance()->GetRecastGroupDetail(ActionManager.Instance()->GetRecastGroup(1, actionId));
+
+        if (recastGroup != null)
+        {
+            float total = recastGroup->Total;     // total cooldown duration
+            float elapsed = recastGroup->Elapsed; // how much has elapsed
+            float remaining = total - elapsed;    // time remaining
+            bool isActive = recastGroup->IsActive; // Is Active (leaving these here because it's just nice to know/might use in future)
+
+            return remaining;
+        }
+        else
+        {
+            return 0;
         }
     }
 }

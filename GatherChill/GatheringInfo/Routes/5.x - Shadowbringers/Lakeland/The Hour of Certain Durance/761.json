@@ -1,0 +1,19 @@
+{
+  "routeId": 761,
+  "territoryId": 813,
+  "zoneName": "Lakeland",
+  "placeName": "The Hour of Certain Durance",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33591
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

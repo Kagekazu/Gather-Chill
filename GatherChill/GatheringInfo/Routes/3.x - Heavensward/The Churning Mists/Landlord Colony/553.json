@@ -1,0 +1,24 @@
+{
+  "routeId": 553,
+  "territoryId": 400,
+  "zoneName": "The Churning Mists",
+  "placeName": "Landlord Colony",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32356,
+    32357,
+    32358,
+    32359,
+    32360,
+    32361
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

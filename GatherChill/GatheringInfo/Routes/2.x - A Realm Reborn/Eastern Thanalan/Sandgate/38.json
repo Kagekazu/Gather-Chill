@@ -1,0 +1,22 @@
+{
+  "routeId": 38,
+  "territoryId": 145,
+  "zoneName": "Eastern Thanalan",
+  "placeName": "Sandgate",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 20,
+  "nodeIds": [
+    30102,
+    30103,
+    30104,
+    30114
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

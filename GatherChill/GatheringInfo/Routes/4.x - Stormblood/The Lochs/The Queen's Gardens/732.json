@@ -1,0 +1,24 @@
+{
+  "routeId": 732,
+  "territoryId": 621,
+  "zoneName": "The Lochs",
+  "placeName": "The Queen\u0027s Gardens",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33337,
+    33338,
+    33339,
+    33340,
+    33341,
+    33342
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

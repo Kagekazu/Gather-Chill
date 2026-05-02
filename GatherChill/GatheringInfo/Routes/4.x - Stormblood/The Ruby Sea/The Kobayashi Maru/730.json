@@ -1,0 +1,24 @@
+{
+  "routeId": 730,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "The Kobayashi Maru",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33325,
+    33326,
+    33327,
+    33328,
+    33329,
+    33330
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

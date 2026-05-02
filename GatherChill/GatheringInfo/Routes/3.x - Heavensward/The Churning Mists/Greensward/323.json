@@ -1,0 +1,19 @@
+{
+  "routeId": 323,
+  "territoryId": 400,
+  "zoneName": "The Churning Mists",
+  "placeName": "Greensward",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31464
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

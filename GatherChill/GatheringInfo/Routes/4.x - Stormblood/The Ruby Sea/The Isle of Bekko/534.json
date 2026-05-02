@@ -1,0 +1,24 @@
+{
+  "routeId": 534,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "The Isle of Bekko",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 60,
+  "nodeIds": [
+    32302,
+    32303,
+    32304,
+    32305,
+    32306,
+    32307
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

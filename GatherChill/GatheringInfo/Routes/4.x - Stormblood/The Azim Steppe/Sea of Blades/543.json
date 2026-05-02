@@ -1,0 +1,21 @@
+{
+  "routeId": 543,
+  "territoryId": 622,
+  "zoneName": "The Azim Steppe",
+  "placeName": "Sea of Blades",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 1,
+  "nodeIds": [
+    32320,
+    32321,
+    32322
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Theo",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

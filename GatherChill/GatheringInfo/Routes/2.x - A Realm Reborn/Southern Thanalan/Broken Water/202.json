@@ -1,0 +1,22 @@
+{
+  "routeId": 202,
+  "territoryId": 146,
+  "zoneName": "Southern Thanalan",
+  "placeName": "Broken Water",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 30,
+  "nodeIds": [
+    30483,
+    30484,
+    30485,
+    30486
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

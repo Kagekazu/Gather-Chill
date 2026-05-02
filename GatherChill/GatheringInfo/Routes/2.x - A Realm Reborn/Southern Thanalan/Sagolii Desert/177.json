@@ -1,0 +1,22 @@
+{
+  "routeId": 177,
+  "territoryId": 146,
+  "zoneName": "Southern Thanalan",
+  "placeName": "Sagolii Desert",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 35,
+  "nodeIds": [
+    30491,
+    30492,
+    30493,
+    30494
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

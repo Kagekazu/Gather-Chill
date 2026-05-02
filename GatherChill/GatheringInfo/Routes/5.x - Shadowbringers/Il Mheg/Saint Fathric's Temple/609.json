@@ -1,0 +1,19 @@
+{
+  "routeId": 609,
+  "territoryId": 816,
+  "zoneName": "Il Mheg",
+  "placeName": "Saint Fathric\u0027s Temple",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    32683
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

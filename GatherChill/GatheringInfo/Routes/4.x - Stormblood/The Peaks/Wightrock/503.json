@@ -1,0 +1,19 @@
+{
+  "routeId": 503,
+  "territoryId": 620,
+  "zoneName": "The Peaks",
+  "placeName": "Wightrock",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32186
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

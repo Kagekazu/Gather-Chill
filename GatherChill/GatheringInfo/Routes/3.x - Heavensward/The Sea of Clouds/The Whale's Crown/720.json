@@ -1,0 +1,24 @@
+{
+  "routeId": 720,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "The Whale\u0027s Crown",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33265,
+    33266,
+    33267,
+    33268,
+    33269,
+    33270
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

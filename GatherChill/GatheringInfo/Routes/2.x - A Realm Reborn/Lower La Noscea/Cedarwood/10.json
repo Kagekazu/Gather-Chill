@@ -1,0 +1,22 @@
+{
+  "routeId": 10,
+  "territoryId": 135,
+  "zoneName": "Lower La Noscea",
+  "placeName": "Cedarwood",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 10,
+  "nodeIds": [
+    30011,
+    30022,
+    30023,
+    30051
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

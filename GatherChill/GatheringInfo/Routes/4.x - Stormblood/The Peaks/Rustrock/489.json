@@ -1,0 +1,24 @@
+{
+  "routeId": 489,
+  "territoryId": 620,
+  "zoneName": "The Peaks",
+  "placeName": "Rustrock",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32147,
+    32148,
+    32149,
+    32150,
+    32151,
+    32152
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

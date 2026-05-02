@@ -1,0 +1,19 @@
+{
+  "routeId": 759,
+  "territoryId": 816,
+  "zoneName": "Il Mheg",
+  "placeName": "Voeburtenburg",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33589
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

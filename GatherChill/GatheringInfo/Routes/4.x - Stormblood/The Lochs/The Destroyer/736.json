@@ -1,0 +1,24 @@
+{
+  "routeId": 736,
+  "territoryId": 621,
+  "zoneName": "The Lochs",
+  "placeName": "The Destroyer",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33356,
+    33357,
+    33358,
+    33359,
+    33360,
+    33361
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

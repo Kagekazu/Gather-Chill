@@ -1,0 +1,21 @@
+{
+  "routeId": 785,
+  "territoryId": 815,
+  "zoneName": "Amh Araeng",
+  "placeName": "The Inn at Journey\u0027s Head",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33640,
+    33641,
+    33642
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,24 @@
+{
+  "routeId": 359,
+  "territoryId": 400,
+  "zoneName": "The Churning Mists",
+  "placeName": "Four Arms",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31418,
+    31419,
+    31420,
+    31421,
+    31422,
+    31423
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

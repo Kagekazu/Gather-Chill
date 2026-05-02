@@ -1,0 +1,22 @@
+{
+  "routeId": 654,
+  "territoryId": 134,
+  "zoneName": "Middle La Noscea",
+  "placeName": "Zephyr Drift",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 5,
+  "nodeIds": [
+    32843,
+    32844,
+    32845,
+    32846
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}

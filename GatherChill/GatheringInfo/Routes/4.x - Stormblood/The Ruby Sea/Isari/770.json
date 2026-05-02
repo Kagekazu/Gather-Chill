@@ -1,0 +1,19 @@
+{
+  "routeId": 770,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "Isari",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 65,
+  "nodeIds": [
+    33021
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

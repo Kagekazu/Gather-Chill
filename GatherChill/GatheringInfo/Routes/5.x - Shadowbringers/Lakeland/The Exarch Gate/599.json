@@ -1,0 +1,21 @@
+{
+  "routeId": 599,
+  "territoryId": 813,
+  "zoneName": "Lakeland",
+  "placeName": "The Exarch Gate",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    32663,
+    33611,
+    33612
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

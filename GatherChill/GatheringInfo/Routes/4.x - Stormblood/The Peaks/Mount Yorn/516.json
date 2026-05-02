@@ -1,0 +1,24 @@
+{
+  "routeId": 516,
+  "territoryId": 620,
+  "zoneName": "The Peaks",
+  "placeName": "Mount Yorn",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32249,
+    32250,
+    32251,
+    32252,
+    32253,
+    32254
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,24 @@
+{
+  "routeId": 672,
+  "territoryId": 621,
+  "zoneName": "The Lochs",
+  "placeName": "Loch Seld",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32935,
+    32936,
+    32937,
+    32938,
+    32939,
+    32940
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}

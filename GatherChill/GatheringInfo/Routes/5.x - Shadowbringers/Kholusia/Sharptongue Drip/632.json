@@ -1,0 +1,19 @@
+{
+  "routeId": 632,
+  "territoryId": 814,
+  "zoneName": "Kholusia",
+  "placeName": "Sharptongue Drip",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    32771
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,21 @@
+{
+  "routeId": 931,
+  "territoryId": 815,
+  "zoneName": "Amh Araeng",
+  "placeName": "The Central Hills of Amber",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 90,
+  "nodeIds": [
+    34475,
+    34476,
+    34477
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

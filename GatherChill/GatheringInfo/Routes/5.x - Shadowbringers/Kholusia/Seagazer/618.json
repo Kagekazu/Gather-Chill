@@ -1,0 +1,24 @@
+{
+  "routeId": 618,
+  "territoryId": 814,
+  "zoneName": "Kholusia",
+  "placeName": "Seagazer",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    32727,
+    32728,
+    32729,
+    32730,
+    32731,
+    32732
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

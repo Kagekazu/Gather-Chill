@@ -1,0 +1,24 @@
+{
+  "routeId": 592,
+  "territoryId": 816,
+  "zoneName": "Il Mheg",
+  "placeName": "The Bookman\u0027s Shelves",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    32626,
+    32627,
+    32628,
+    32629,
+    32630,
+    32631
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

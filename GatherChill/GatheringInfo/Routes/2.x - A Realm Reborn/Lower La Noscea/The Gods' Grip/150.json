@@ -1,0 +1,22 @@
+{
+  "routeId": 150,
+  "territoryId": 135,
+  "zoneName": "Lower La Noscea",
+  "placeName": "The Gods\u0027 Grip",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 50,
+  "nodeIds": [
+    30552,
+    30553,
+    30554,
+    30555
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

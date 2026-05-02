@@ -1,0 +1,19 @@
+{
+  "routeId": 221,
+  "territoryId": 145,
+  "zoneName": "Eastern Thanalan",
+  "placeName": "Drybone",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 50,
+  "nodeIds": [
+    31009
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,19 @@
+{
+  "routeId": 777,
+  "territoryId": 620,
+  "zoneName": "The Peaks",
+  "placeName": "Heather Falls",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33028
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

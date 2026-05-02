@@ -1,0 +1,22 @@
+{
+  "routeId": 154,
+  "territoryId": 140,
+  "zoneName": "Western Thanalan",
+  "placeName": "Hammerlea",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 5,
+  "nodeIds": [
+    30413,
+    30414,
+    30415,
+    30416
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

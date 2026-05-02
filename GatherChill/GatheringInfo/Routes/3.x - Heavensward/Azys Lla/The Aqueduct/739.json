@@ -1,0 +1,24 @@
+{
+  "routeId": 739,
+  "territoryId": 402,
+  "zoneName": "Azys Lla",
+  "placeName": "The Aqueduct",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33374,
+    33375,
+    33376,
+    33377,
+    33378,
+    33379
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

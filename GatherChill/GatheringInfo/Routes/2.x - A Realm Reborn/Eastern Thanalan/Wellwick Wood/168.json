@@ -1,0 +1,22 @@
+{
+  "routeId": 168,
+  "territoryId": 145,
+  "zoneName": "Eastern Thanalan",
+  "placeName": "Wellwick Wood",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 30,
+  "nodeIds": [
+    30467,
+    30468,
+    30469,
+    30470
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

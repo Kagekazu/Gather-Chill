@@ -1,0 +1,24 @@
+{
+  "routeId": 620,
+  "territoryId": 815,
+  "zoneName": "Amh Araeng",
+  "placeName": "Ladle",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    32739,
+    32740,
+    32741,
+    32742,
+    32743,
+    32744
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

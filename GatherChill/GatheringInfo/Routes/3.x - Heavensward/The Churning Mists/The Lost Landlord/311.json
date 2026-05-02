@@ -1,0 +1,21 @@
+{
+  "routeId": 311,
+  "territoryId": 400,
+  "zoneName": "The Churning Mists",
+  "placeName": "The Lost Landlord",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31448,
+    31469,
+    31470
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

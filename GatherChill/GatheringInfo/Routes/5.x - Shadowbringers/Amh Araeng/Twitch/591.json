@@ -1,0 +1,24 @@
+{
+  "routeId": 591,
+  "territoryId": 815,
+  "zoneName": "Amh Araeng",
+  "placeName": "Twitch",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32620,
+    32621,
+    32622,
+    32623,
+    32624,
+    32625
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza, Ice",
+  "lastUpdated": "2025-12-29 19:04:06",
+  "timedNode": false
+}

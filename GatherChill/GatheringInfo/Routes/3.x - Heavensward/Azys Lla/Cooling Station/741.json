@@ -1,0 +1,24 @@
+{
+  "routeId": 741,
+  "territoryId": 402,
+  "zoneName": "Azys Lla",
+  "placeName": "Cooling Station",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33386,
+    33387,
+    33388,
+    33389,
+    33390,
+    33391
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

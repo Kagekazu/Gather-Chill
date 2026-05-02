@@ -1,0 +1,24 @@
+{
+  "routeId": 514,
+  "territoryId": 621,
+  "zoneName": "The Lochs",
+  "placeName": "Abalathia\u0027s Skull",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32242,
+    32243,
+    32244,
+    32245,
+    32246,
+    32247
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

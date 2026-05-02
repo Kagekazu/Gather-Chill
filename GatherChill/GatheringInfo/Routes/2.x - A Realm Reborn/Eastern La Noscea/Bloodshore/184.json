@@ -1,0 +1,22 @@
+{
+  "routeId": 184,
+  "territoryId": 137,
+  "zoneName": "Eastern La Noscea",
+  "placeName": "Bloodshore",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 30,
+  "nodeIds": [
+    30353,
+    30354,
+    30355,
+    30356
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

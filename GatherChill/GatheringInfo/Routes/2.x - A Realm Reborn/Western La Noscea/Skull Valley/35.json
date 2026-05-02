@@ -1,0 +1,22 @@
+{
+  "routeId": 35,
+  "territoryId": 138,
+  "zoneName": "Western La Noscea",
+  "placeName": "Skull Valley",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 20,
+  "nodeIds": [
+    30098,
+    30099,
+    30100,
+    30101
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

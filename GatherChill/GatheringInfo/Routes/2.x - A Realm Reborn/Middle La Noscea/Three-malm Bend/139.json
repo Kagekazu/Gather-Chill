@@ -1,0 +1,22 @@
+{
+  "routeId": 139,
+  "territoryId": 134,
+  "zoneName": "Middle La Noscea",
+  "placeName": "Three-malm Bend",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 30,
+  "nodeIds": [
+    30321,
+    30322,
+    30323,
+    30324
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

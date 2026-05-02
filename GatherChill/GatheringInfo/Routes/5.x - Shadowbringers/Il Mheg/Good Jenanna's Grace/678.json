@@ -1,0 +1,24 @@
+{
+  "routeId": 678,
+  "territoryId": 816,
+  "zoneName": "Il Mheg",
+  "placeName": "Good Jenanna\u0027s Grace",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    32971,
+    32972,
+    32973,
+    32974,
+    32975,
+    32976
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}

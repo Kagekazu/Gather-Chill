@@ -1,0 +1,21 @@
+{
+  "routeId": 929,
+  "territoryId": 814,
+  "zoneName": "Kholusia",
+  "placeName": "The Bright Cliff",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 90,
+  "nodeIds": [
+    34469,
+    34470,
+    34471
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

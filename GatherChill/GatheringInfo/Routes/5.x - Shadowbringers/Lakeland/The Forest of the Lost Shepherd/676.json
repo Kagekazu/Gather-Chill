@@ -1,0 +1,24 @@
+{
+  "routeId": 676,
+  "territoryId": 813,
+  "zoneName": "Lakeland",
+  "placeName": "The Forest of the Lost Shepherd",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    32959,
+    32960,
+    32961,
+    32962,
+    32963,
+    32964
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}

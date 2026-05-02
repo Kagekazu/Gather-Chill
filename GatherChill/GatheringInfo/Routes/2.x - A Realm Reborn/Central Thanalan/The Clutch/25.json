@@ -1,0 +1,22 @@
+{
+  "routeId": 25,
+  "territoryId": 141,
+  "zoneName": "Central Thanalan",
+  "placeName": "The Clutch",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 15,
+  "nodeIds": [
+    30072,
+    30073,
+    30074,
+    30075
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

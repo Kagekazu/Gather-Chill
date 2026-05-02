@@ -1,0 +1,22 @@
+{
+  "routeId": 39,
+  "territoryId": 138,
+  "zoneName": "Western La Noscea",
+  "placeName": "Quarterstone",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 20,
+  "nodeIds": [
+    30115,
+    30116,
+    30117,
+    30118
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

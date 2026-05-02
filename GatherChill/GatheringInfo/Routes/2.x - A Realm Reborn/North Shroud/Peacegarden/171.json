@@ -1,0 +1,22 @@
+{
+  "routeId": 171,
+  "territoryId": 154,
+  "zoneName": "North Shroud",
+  "placeName": "Peacegarden",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 30,
+  "nodeIds": [
+    30329,
+    30330,
+    30331,
+    30332
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

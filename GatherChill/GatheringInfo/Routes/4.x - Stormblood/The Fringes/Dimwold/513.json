@@ -1,0 +1,24 @@
+{
+  "routeId": 513,
+  "territoryId": 612,
+  "zoneName": "The Fringes",
+  "placeName": "Dimwold",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32236,
+    32237,
+    32238,
+    32239,
+    32240,
+    32241
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

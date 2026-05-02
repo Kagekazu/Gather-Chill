@@ -1,0 +1,24 @@
+{
+  "routeId": 286,
+  "territoryId": 398,
+  "zoneName": "The Dravanian Forelands",
+  "placeName": "Chocobo Forest",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 55,
+  "nodeIds": [
+    31322,
+    31323,
+    31324,
+    31325,
+    31326,
+    31327
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

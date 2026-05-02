@@ -1,0 +1,21 @@
+{
+  "routeId": 548,
+  "territoryId": 622,
+  "zoneName": "The Azim Steppe",
+  "placeName": "Onsal Hakair",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 1,
+  "nodeIds": [
+    32335,
+    32336,
+    32337
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "plogon_enjoyer",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

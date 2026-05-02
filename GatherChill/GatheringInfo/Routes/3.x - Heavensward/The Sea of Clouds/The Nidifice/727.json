@@ -1,0 +1,24 @@
+{
+  "routeId": 727,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "The Nidifice",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33307,
+    33308,
+    33309,
+    33310,
+    33311,
+    33312
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

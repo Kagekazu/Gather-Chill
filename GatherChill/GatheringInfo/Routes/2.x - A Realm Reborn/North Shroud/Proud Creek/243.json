@@ -1,0 +1,22 @@
+{
+  "routeId": 243,
+  "territoryId": 154,
+  "zoneName": "North Shroud",
+  "placeName": "Proud Creek",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 5,
+  "nodeIds": [
+    31037,
+    31038,
+    31039,
+    31040
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Censored",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,24 @@
+{
+  "routeId": 728,
+  "territoryId": 401,
+  "zoneName": "The Sea of Clouds",
+  "placeName": "The Shattered Back",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 75,
+  "nodeIds": [
+    33313,
+    33314,
+    33315,
+    33316,
+    33317,
+    33318
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

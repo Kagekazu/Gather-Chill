@@ -1,0 +1,21 @@
+{
+  "routeId": 779,
+  "territoryId": 612,
+  "zoneName": "The Fringes",
+  "placeName": "Pike Falls",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 65,
+  "nodeIds": [
+    33622,
+    33623,
+    33624
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

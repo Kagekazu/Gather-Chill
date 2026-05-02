@@ -1,0 +1,22 @@
+{
+  "routeId": 657,
+  "territoryId": 153,
+  "zoneName": "South Shroud",
+  "placeName": "Lower Paths",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 45,
+  "nodeIds": [
+    32855,
+    32856,
+    32857,
+    32858
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}

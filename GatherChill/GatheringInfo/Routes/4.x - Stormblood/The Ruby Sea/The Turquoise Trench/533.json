@@ -1,0 +1,24 @@
+{
+  "routeId": 533,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "The Turquoise Trench",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 60,
+  "nodeIds": [
+    32296,
+    32297,
+    32298,
+    32299,
+    32300,
+    32301
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

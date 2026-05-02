@@ -1,0 +1,24 @@
+{
+  "routeId": 506,
+  "territoryId": 612,
+  "zoneName": "The Fringes",
+  "placeName": "East End",
+  "expansionId": 2,
+  "gatheringJobId": 17,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32194,
+    32195,
+    32196,
+    32197,
+    32198,
+    32199
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

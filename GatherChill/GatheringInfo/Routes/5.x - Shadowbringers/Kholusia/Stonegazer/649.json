@@ -1,0 +1,24 @@
+{
+  "routeId": 649,
+  "territoryId": 814,
+  "zoneName": "Kholusia",
+  "placeName": "Stonegazer",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 70,
+  "nodeIds": [
+    32815,
+    32816,
+    32817,
+    32818,
+    32819,
+    32820
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

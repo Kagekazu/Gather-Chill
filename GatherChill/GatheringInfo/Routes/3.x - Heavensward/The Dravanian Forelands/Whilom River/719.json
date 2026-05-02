@@ -1,0 +1,24 @@
+{
+  "routeId": 719,
+  "territoryId": 398,
+  "zoneName": "The Dravanian Forelands",
+  "placeName": "Whilom River",
+  "expansionId": 1,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    33259,
+    33260,
+    33261,
+    33262,
+    33263,
+    33264
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

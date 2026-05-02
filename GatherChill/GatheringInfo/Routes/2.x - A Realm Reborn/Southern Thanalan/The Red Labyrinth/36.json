@@ -1,0 +1,22 @@
+{
+  "routeId": 36,
+  "territoryId": 146,
+  "zoneName": "Southern Thanalan",
+  "placeName": "The Red Labyrinth",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 35,
+  "nodeIds": [
+    30038,
+    30996,
+    30997,
+    30998
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

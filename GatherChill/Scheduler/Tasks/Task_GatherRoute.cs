@@ -4,8 +4,14 @@ using Dalamud.Game.ClientState.Objects.Types;
 using ECommons.GameHelpers;
 using ECommons.Logging;
 using ECommons.Throttlers;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using GatherChill.Enums;
 using GatherChill.GatheringInfo;
-using GatherChill.Utilities;
+using GatherChill.Utilities.GatheringHelpers;
+using GatherChill.Utilities.Tools;
+using GatherChill.Utilities.Utility;
+using Lumina.Excel.Sheets;
 using System.Collections.Generic;
 using static ECommons.UIHelpers.AddonMasterImplementations.AddonMaster;
 
@@ -14,7 +20,6 @@ namespace GatherChill.Scheduler.Tasks
     internal class Task_GatherRoute
     {
         private static GatheringRoute selectedRoute = null;
-        private static GatheringRouteLoader _routeLoader = P.routeLoader;
         private static readonly Random _random = new Random();
 
         private static uint LoadedRouteId = 0;
@@ -32,61 +37,29 @@ namespace GatherChill.Scheduler.Tasks
             }
             else
             {
-                P.taskManager.Enqueue(() => LoadRoute(routeId), "Load Route");
                 P.taskManager.Enqueue(() => TravelFarCheck(), "Traveling to node group", TaskConfig);
             }
         }
 
-        // TODO: Need to just change this entirely
-        // I was trying to be smart and tehe lets make it nice and smooth
-        // but tbh, it's just causing more issues that needs resolving in the end *-sighs-*
-        // Sometimes, the simplier path isn't the best one in the end. And this is good case of it.
-        // So: Need to re-factor to be more like moon
-        // AKA: Move all the checks into their own seperate thing
-        // Then: Once within range, check to see how we should get to that destination once again -> move accordingly. 
-        // Probably turn this into it's own task in itself
-        // If none are within range, just go ahead and move onto the next
-        // This also means refactoring navmesh movement for flying and ground movement as a whole into their own things for sanity check
 
-        private static bool? LoadRoute(uint routeId)
+
+        private static bool TravelFarCheck()
         {
-            var loadedRoute = _routeLoader.GetRoute(routeId);
-
-            if (loadedRoute != null)
+            var route = P.routeEditor.GetRoute(SchedulerMain.RouteId.Value);
+            if (route != null && selectedRoute != route)
             {
-                selectedRoute = loadedRoute;
-
-                if (LoadedRouteId != routeId)
+                IceLogging.Verbose("No route was loaded/old route did not match. Updating to current");
+                selectedRoute = route;
+                GatherRoute.Clear();
+                foreach (var group in route.NodeInfo)
                 {
-                    LoadedRouteId = routeId;
-                    RouteIndex = 0;
-                    GatherRoute.Clear();
-
-                    foreach (var group in selectedRoute.NodeGroups)
-                    {
-                        foreach (var node in group.Nodes)
-                        {
-                            GatherRoute.Add(node);
-                        }
-                    }
-                }
-
-                return true;
-            }
-            else
-            {
-                if (EzThrottler.Throttle("Throttling log message", 1000))
-                {
-                    PluginLog.Debug($"We've found an invalid route. RouteId: {routeId}");
+                    GatherRoute.Add(group);
                 }
             }
-            return false;
-        }
-        private static bool? TravelFarCheck()
-        {
+
             if (GatherRoute.Count == 0)
             {
-                PluginLog.Warning("No route is loaded, going to just immediately cancel here");
+                IceLogging.Warning("No route is loaded, going to just immediately cancel here");
                 return true;
             }
 
@@ -103,28 +76,28 @@ namespace GatherChill.Scheduler.Tasks
             TargetNodeId = currentNode.NodeId;
 
             if (EzThrottler.Throttle("Travel Check throttle message"))
-                PluginLog.Verbose("Currently in travel check mode");
+                IceLogging.Verbose("Currently in travel check mode");
 
             // bool allNodesInRange = currentNode.Locations.All(x => Player.DistanceTo(x.Position.ToVector3()) <= loadRange);
-            if (Player.DistanceTo(currentNode.Locations[0].Position.ToVector3()) > loadRange)
+            if (Player.DistanceTo(currentNode.Locations[0].Position) > loadRange)
             {
                 TargetFanPoint = null;
 
                 var firstNode = currentNode.Locations[0];
-                var randomFanPoint = GetRandomPointInFan(firstNode);
+                var randomFanPoint = NodeLocationExtensions.GetRandomFlightPosition(firstNode, Player.Position);
                 if (!Task_NavmeshMove.Task_FlyTo(randomFanPoint, false, 50, true).Value)
                 {
                     if (EzThrottler.Throttle("Throttle message"))
                     {
-                        PluginLog.Verbose($"To far from all nodes to check. Distance: {Player.DistanceTo(randomFanPoint)}");
+                        IceLogging.Verbose($"To far from all nodes to check. Distance: {Player.DistanceTo(randomFanPoint)}");
                     }
                 }
                 return false;
             }
             else
             {
-                PluginLog.Debug("We're within range of all nodes, continuing on");
-                P.navmesh.Stop();
+                IceLogging.Debug("We're within range of all nodes, continuing on");
+                P.navmesh.PathStop();
 
                 var validNode = Svc.Objects.Where(obj => obj.BaseId == TargetNodeId)
                            .Where(obj => obj.IsTargetable)
@@ -133,7 +106,7 @@ namespace GatherChill.Scheduler.Tasks
 
                 if (EzThrottler.Throttle("IsNodeValid"))
                 {
-                    PluginLog.Debug($"Is Node Valid: {validNode != null}");
+                    IceLogging.Debug($"Is Node Valid: {validNode != null}");
                 }
 
                 if (validNode == null)
@@ -144,13 +117,13 @@ namespace GatherChill.Scheduler.Tasks
                 }
                 else
                 {
-                    PluginLog.Debug("we're within range, checking travel kind now");
-                    P.taskManager.Enqueue(() => CheckTravelKind(validNode));
+                    IceLogging.Debug("we're within range, checking travel kind now");
+                    P.taskManager.Enqueue(() => CheckTravelKind(validNode), "Checking Travel Kind");
                     return true;
                 }
             }
         }
-        private static bool? IndividualNodeCheck()
+        private static bool IndividualNodeCheck()
         {
             var currentNode = GatherRoute[RouteIndex];
             TargetNodeId = currentNode.NodeId;
@@ -158,20 +131,20 @@ namespace GatherChill.Scheduler.Tasks
             // if we're doing this, that means that all nodes aren't within a close 75 yalms of each other. So going to check each individually
             if (NodeCheckIndex < currentNode.Locations.Count)
             {
-                PluginLog.Verbose($"Checking location: {NodeCheckIndex}");
+                IceLogging.Verbose($"Checking location: {NodeCheckIndex}");
                 var location = currentNode.Locations[NodeCheckIndex];
-                var distanceToLoc = Player.DistanceTo(location.Position.ToVector3());
+                var distanceToLoc = Player.DistanceTo(location.Position);
                 if (EzThrottler.Throttle("Location message throttle"))
-                    PluginLog.Debug($"Distance to location: {distanceToLoc:N2}");
+                    IceLogging.Debug($"Distance to location: {distanceToLoc:N2}");
 
                 if (distanceToLoc > 75)
                 {
-                    var randomFanPoint = GetRandomPointInFan(location);
+                    var randomFanPoint = NodeLocationExtensions.GetRandomFlightPosition(location, Player.Position);
                     if (!Task_NavmeshMove.Task_FlyTo(randomFanPoint, false, 50, true).Value)
                     {
                         if (EzThrottler.Throttle("Throttle message"))
                         {
-                            PluginLog.Verbose("Too far from node to check");
+                            IceLogging.Verbose("Too far from node to check");
                         }
                     }
                     return false; // Still need to reach this location
@@ -179,7 +152,7 @@ namespace GatherChill.Scheduler.Tasks
                 else
                 {
                     if (P.navmesh.IsRunning())
-                        P.navmesh.Stop();
+                        P.navmesh.PathStop();
 
                     // If we're here, that means that we're within load range. 
                     var validNode = Svc.Objects.Where(obj => obj.BaseId == TargetNodeId)
@@ -189,14 +162,14 @@ namespace GatherChill.Scheduler.Tasks
 
                     if (validNode != null)
                     {
-                        PluginLog.Debug("We've found a valid node! Time to pathfind/interact with it");
+                        IceLogging.Debug("We've found a valid node! Time to pathfind/interact with it");
                         NodeCheckIndex = 0; // Reset for next time
                         P.taskManager.Enqueue(() => CheckTravelKind(validNode), "Checking Travel Kind");
                         return true;
                     }
                     else
                     {
-                        PluginLog.Debug($"No valid node at location {NodeCheckIndex}, moving to next location");
+                        IceLogging.Debug($"No valid node at location {NodeCheckIndex}, moving to next location");
                         NodeCheckIndex += 1;
                         return false;
                     }
@@ -205,64 +178,76 @@ namespace GatherChill.Scheduler.Tasks
             else
             {
                 // We've checked all locations and found no valid nodes
-                PluginLog.Debug("Checked all locations for this node group, moving to next route index");
+                IceLogging.Debug("Checked all locations for this node group, moving to next route index");
                 TargetFanPoint = null;
                 TargetNodeId = null;
                 RouteIndex += 1;
                 NodeCheckIndex = 0;
                 if (EzThrottler.Throttle("Else statement"))
                 {
-                    PluginLog.Debug($"Gather route count: {GatherRoute.Count}");
-                    PluginLog.Debug("Moving to the next node");
-                    PluginLog.Debug($"Route Index: {RouteIndex}");
+                    IceLogging.Debug($"Gather route count: {GatherRoute.Count}");
+                    IceLogging.Debug("Moving to the next node");
+                    IceLogging.Debug($"Route Index: {RouteIndex}");
                 }
                 return true;
             }
         }
-        private static bool? CheckTravelKind(IGameObject node)
+        private static bool CheckTravelKind(IGameObject node)
         {
             float minFlyDistance = 25;
 
             var currentNode = GatherRoute[RouteIndex];
-            var targetLocation = currentNode.Locations.Where(x => x.Position.ToVector3() == node.Position).FirstOrDefault();
+            var targetLocation = currentNode.Locations.Where(x => x.Position == node.Position).FirstOrDefault();
             if (targetLocation == null)
             {
-                PluginLog.Error("We're getting an invalid node location");
+                IceLogging.Error("We're getting an invalid node location");
                 return true;
             }
 
-            TargetFanPoint = GetRandomPointInFan(targetLocation);
+            TargetFanPoint = NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position);
+
+            var closestWalkPoint = Vector3.Zero;
+            if (targetLocation.UseSpecificWalkingSpots)
+            {
+                var walkPointSpecific = targetLocation.WalkablePositions.OrderBy(x => Vector3.Distance(TargetFanPoint.Value, x)).FirstOrDefault();
+                closestWalkPoint = walkPointSpecific;
+            }
+            else
+            {
+                closestWalkPoint = NodeLocationExtensions.GetRandomGatherPosition(targetLocation, Player.Position);
+            }
 
             if (Player.DistanceTo(node.Position) >= minFlyDistance && !Svc.Condition[ConditionFlag.Diving])
             {
-                PluginLog.Debug("We're moving onto the next set via flying");
+                IceLogging.Debug("We're moving onto the next set via flying");
+
                 P.taskManager.EnqueueMulti
                 (
-                    new(() => Task_NavmeshMove.Task_FlyTo(TargetFanPoint.Value, true, 0.5f, false), "True Fly Task", TaskConfig),
+                    new(() => Task_NavmeshMove.Task_FlyTo(TargetFanPoint.Value, true, 0.5f, true), "True Fly Task", TaskConfig),
+                    new(() => Task_NavmeshMove.Task_GroundTo(closestWalkPoint, true, 0.5f), "Moving to the node", TaskConfig),
                     new(() => InteractWithNode(node.BaseId), "Interact with node")
                 );
             }
             else
             {
-                PluginLog.Debug("We're moving onto the next set via ground movement");
+                IceLogging.Debug("We're moving onto the next set via ground movement");
                 P.taskManager.EnqueueMulti
                 (
-                    new(() => Task_NavmeshMove.Task_GroundTo(TargetFanPoint.Value, true, 0.5f, false), "Ground movement", TaskConfig),
+                    new(() => Task_NavmeshMove.Task_GroundTo(closestWalkPoint, true, 0.5f), "Moving to the node", TaskConfig),
                     new(() => InteractWithNode(node.BaseId), "Interact with node")
                 );
             }
 
             return true;
         }
-
-        private static bool? InteractWithNode(uint nodeId)
+        private static bool InteractWithNode(uint nodeId)
         {
             var targetNode = Svc.Objects.Where(x => x.BaseId == nodeId)
                                         .Where(x => x.IsTargetable)
                                         .FirstOrDefault();
             if (Svc.Condition[ConditionFlag.Gathering] && GenericHelpers.TryGetAddonMaster<Gathering>("Gathering", out var gather) && gather.IsAddonReady || GenericHelpers.TryGetAddonMaster<GatheringMasterpiece>("GatheringMasterpiece", out var collectable) && collectable.IsAddonReady)
             {
-                PluginLog.Information($"Gathering window is now visible, continuing onto GatheringInteraction Task");
+                IceLogging.Info($"Gathering window is now visible, continuing onto GatheringInteraction Task");
                 RouteIndex += 1;
                 return true;
             }
@@ -279,7 +264,7 @@ namespace GatherChill.Scheduler.Tasks
             }
             else
             {
-                PluginLog.Debug("Somehow we've gotten here, and we shouldn't be here. Adding 1 to the counter and returning");
+                IceLogging.Debug("Somehow we've gotten here, and we shouldn't be here. Adding 1 to the counter and returning");
                 RouteIndex += 1;
                 return true;
             }
@@ -287,12 +272,12 @@ namespace GatherChill.Scheduler.Tasks
 
             return false;
         }
-        private static bool? GatheringInteraction(uint itemId)
+        private static bool GatheringInteraction(uint itemId)
         {
             if (P.navmesh.IsRunning())
             {
                 if (EzThrottler.Throttle("Stopping navmesh, cause we shouldn't be running"))
-                    P.navmesh.Stop();
+                    P.navmesh.PathStop();
             }
 
             if (Svc.Condition[ConditionFlag.Gathering])
@@ -303,6 +288,28 @@ namespace GatherChill.Scheduler.Tasks
                     {
                         if (gather.CurrentIntegrity != 0)
                         {
+                            List<uint> Crystals = new()
+                            {
+                                // shards
+                                2, 3, 4, 5, 6, 7,
+
+                                // crystals
+                                8, 9, 10, 11, 12, 13,
+
+                                // clusters
+                                14, 15, 16, 17, 18, 19
+                            };
+
+                            if (Crystals.Contains(itemId))
+                            {
+                                bool maxInteg = gather.TotalIntegrity == gather.CurrentIntegrity;
+
+                                if (Crystal_BuffCheck(maxInteg))
+                                    return false;
+                            }
+                            else if (Basic_BuffCheck())
+                                return false;
+
                             if (EzThrottler.Throttle($"Gathering Item: {itemId}"))
                                 gather.GatheredItems.Where(x => x.ItemID == itemId).FirstOrDefault().Gather();
 
@@ -316,26 +323,103 @@ namespace GatherChill.Scheduler.Tasks
 
             return false;
         }
-
-        private static Vector3 GetRandomPointInFan(NodeLocation nodeLoc)
+        private static unsafe bool Basic_BuffCheck()
         {
-            // Get random distance between min and max
-            float distance = (float)(_random.NextDouble() * (nodeLoc.MaxDistance - nodeLoc.MinDistance) + nodeLoc.MinDistance);
+            var actionInfo = Gather_Util.GathActionDict[GatherBuffId.BYII];
+            bool hasBuff = Utils.HasStatusId(actionInfo.StatusId) || Utils.HasStatusId(actionInfo.StatusId2);
+            bool hasGp = Utils.GetGp() >= actionInfo.RequiredGp;
+            var actionId = actionInfo.ClassAction[Player.Job];
 
-            // Get random angle between min and max (in degrees)
-            float angleDegrees = (float)(_random.NextDouble() * (nodeLoc.MaxAngle - nodeLoc.MinAngle) + nodeLoc.MinAngle);
+            if (!hasBuff && hasGp)
+            {
+                ActionManager.Instance()->UseAction(ActionType.Action, actionId);
+                return true;
+            }
+            else
+                return false;
+        }
 
-            // Convert to radians
-            float angleRadians = angleDegrees * MathF.PI / 180f;
+        private static unsafe bool Crystal_BuffCheck(bool MaxDurability)
+        {
+            var job = Player.Job;
+            var level = Player.Level;
 
-            float offsetX = distance * -MathF.Sin(angleRadians);
-            float offsetZ = distance * MathF.Cos(angleRadians);
+            var givingLand = Gather_Util.GathActionDict[GatherBuffId.GivingLand];
+            var twelveBounty = Gather_Util.GathActionDict[GatherBuffId.TwelveBounty];
 
-            return new Vector3(
-                nodeLoc.Position.X + offsetX,
-                nodeLoc.Position.Y + nodeLoc.FanHeightIncrease,
-                nodeLoc.Position.Z + offsetZ
-            );
+            if (MaxDurability)
+            {
+                var cooldown = BuffCooldown(givingLand.ClassAction[job]);
+                if (cooldown < 40)
+                {
+                    // We're within possible range of using the skill, need to see if it's actually 0, if yes then we can buff, if not then we continue onwards.
+                    if (cooldown == 0)
+                    {
+                        if (!Utils.HasStatusId(givingLand.StatusId) && (Utils.GetGp() >= givingLand.RequiredGp) && level >= givingLand.RequiredLv)
+                        {
+                            if (EzThrottler.Throttle("Using Action", 100))
+                                ActionManager.Instance()->UseAction(ActionType.Action, givingLand.ClassAction[job]);
+
+                            return true;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!Utils.HasStatusId(twelveBounty.StatusId) && Utils.GetGp() >= twelveBounty.RequiredGp && level >= twelveBounty.RequiredLv)
+                    {
+                        if (EzThrottler.Throttle("Using Action", 100))
+                            ActionManager.Instance()->UseAction(ActionType.Action, twelveBounty.ClassAction[job]);
+
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                var increaseInteg = Gather_Util.GathActionDict[GatherBuffId.BonusIntegrity];
+                var bonusInteg = Gather_Util.GathActionDict[GatherBuffId.BonusIntegrity_Chance];
+
+                if (Utils.HasStatusId(bonusInteg.StatusId))
+                {
+                    if (EzThrottler.Throttle("Using Action", 100))
+                        ActionManager.Instance()->UseAction(ActionType.Action, bonusInteg.ClassAction[job]);
+
+                    return true;
+                }
+
+                if (Utils.HasStatusId(givingLand.StatusId))
+                {
+                    if (Utils.GetGp() >= increaseInteg.RequiredGp && level >= increaseInteg.RequiredLv)
+                    {
+                        if (EzThrottler.Throttle("Using Action", 100))
+                            ActionManager.Instance()->UseAction(ActionType.Action, increaseInteg.ClassAction[job]);
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static unsafe float BuffCooldown(uint ActionId)
+        {
+            var recastGroup = ActionManager.Instance()->GetRecastGroupDetail(ActionManager.Instance()->GetRecastGroup(1, ActionId));
+
+            if (recastGroup != null)
+            {
+                float total = recastGroup->Total;     // total cooldown duration
+                float elapsed = recastGroup->Elapsed; // how much has elapsed
+                float remaining = total - elapsed;    // time remaining
+                bool isActive = recastGroup->IsActive; // Is Active (leaving these here because it's just nice to know/might use in future)
+
+                return remaining;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

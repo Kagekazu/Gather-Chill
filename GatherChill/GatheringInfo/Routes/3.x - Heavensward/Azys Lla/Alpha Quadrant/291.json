@@ -1,0 +1,19 @@
+{
+  "routeId": 291,
+  "territoryId": 402,
+  "zoneName": "Azys Lla",
+  "placeName": "Alpha Quadrant",
+  "expansionId": 1,
+  "gatheringJobId": 16,
+  "levelRequirement": 60,
+  "nodeIds": [
+    31706
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

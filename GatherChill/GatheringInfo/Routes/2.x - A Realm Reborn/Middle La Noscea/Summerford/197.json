@@ -1,0 +1,22 @@
+{
+  "routeId": 197,
+  "territoryId": 134,
+  "zoneName": "Middle La Noscea",
+  "placeName": "Summerford",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 50,
+  "nodeIds": [
+    30373,
+    30374,
+    30375,
+    30376
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

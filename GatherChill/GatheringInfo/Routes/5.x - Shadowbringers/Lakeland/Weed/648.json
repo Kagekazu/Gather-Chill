@@ -1,0 +1,24 @@
+{
+  "routeId": 648,
+  "territoryId": 813,
+  "zoneName": "Lakeland",
+  "placeName": "Weed",
+  "expansionId": 3,
+  "gatheringJobId": 17,
+  "levelRequirement": 80,
+  "nodeIds": [
+    32807,
+    32808,
+    32809,
+    32810,
+    32811,
+    32812
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

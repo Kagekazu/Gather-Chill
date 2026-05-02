@@ -1,0 +1,50 @@
+{
+  "routeId": 766,
+  "territoryId": 818,
+  "zoneName": "The Tempest",
+  "placeName": "The Ondo Cups",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 80,
+  "nodeIds": [
+    31510
+  ],
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 31510,
+      "locations": [
+        {
+          "position": {
+            "x": 561.2877,
+            "y": 382.602,
+            "z": -46.17278
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 164,
+            "fan_EndAngle": 267,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 164,
+            "fan_EndAngle": 267,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-29 18:29:01",
+  "timedNode": false
+}

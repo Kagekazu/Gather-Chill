@@ -1,0 +1,24 @@
+{
+  "routeId": 490,
+  "territoryId": 613,
+  "zoneName": "The Ruby Sea",
+  "placeName": "Rasen Kaikyo",
+  "expansionId": 2,
+  "gatheringJobId": 16,
+  "levelRequirement": 65,
+  "nodeIds": [
+    32153,
+    32154,
+    32155,
+    32156,
+    32157,
+    32158
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "liza",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

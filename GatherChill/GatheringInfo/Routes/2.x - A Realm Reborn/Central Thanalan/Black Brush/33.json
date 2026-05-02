@@ -1,0 +1,22 @@
+{
+  "routeId": 33,
+  "territoryId": 141,
+  "zoneName": "Central Thanalan",
+  "placeName": "Black Brush",
+  "expansionId": 0,
+  "gatheringJobId": 17,
+  "levelRequirement": 20,
+  "nodeIds": [
+    30090,
+    30091,
+    30092,
+    30093
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

@@ -1,0 +1,21 @@
+{
+  "routeId": 920,
+  "territoryId": 813,
+  "zoneName": "Lakeland",
+  "placeName": "The Stay",
+  "expansionId": 3,
+  "gatheringJobId": 16,
+  "levelRequirement": 90,
+  "nodeIds": [
+    34416,
+    34418,
+    34420
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "alydev",
+  "lastUpdated": "2025-12-08",
+  "timedNode": false
+}

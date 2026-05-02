@@ -1,0 +1,22 @@
+{
+  "routeId": 658,
+  "territoryId": 139,
+  "zoneName": "Upper La Noscea",
+  "placeName": "Fool Falls",
+  "expansionId": 0,
+  "gatheringJobId": 16,
+  "levelRequirement": 35,
+  "nodeIds": [
+    32859,
+    32860,
+    32861,
+    32862
+  ],
+  "nodeInfo": [],
+  "groupCount": 3,
+  "requiresFolklore": false,
+  "folkloreBook": "",
+  "author": "Ice",
+  "lastUpdated": "2025-12-27",
+  "timedNode": false
+}
