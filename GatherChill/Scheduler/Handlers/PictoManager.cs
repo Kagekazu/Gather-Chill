@@ -3,9 +3,7 @@ using GatherChill.GatheringInfo;
 using GatherChill.Utilities.Tools;
 using GatherChill.Utilities.Utility;
 using Pictomancy;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GatherChill.Scheduler.Handlers;
 
@@ -36,7 +34,7 @@ internal static class PictoManager
     {
         try
         {
-            using (var pictoDraw = PictoService.Draw())
+            using (var pictoDraw = PctService.Draw())
             {
                 if (pictoDraw == null)
                     return;
@@ -89,7 +87,7 @@ internal static class PictoManager
     {
         AddDrawCommand(pictoDraw =>
         {
-            PictoService.VfxRenderer.AddCircle(id, origin, 3, color);
+            PctService.VfxRenderer.AddCircle(id, origin, 3, color);
             // PictoService.VfxRenderer.AddOmen(id, $"{id}_Omen", origin, color:color);
         });
     }
@@ -274,23 +272,26 @@ internal static class PictoManager
         pictoDraw.AddLine(headRight, arrowTip, lineHalfWidth, outlineColor, 2.0f);
     }
 
+    /*
     public static void DrawIcon(ImTextureID textureHandle, Vector3 worldPos, Vector2? size = null)
     {
         AddDrawCommand(_ =>
         {
-            var iconSize = size ?? new Vector2(24, 24);
-            if (!PictoService.GameGui.WorldToScreen(worldPos, out var screenPos)) return;
+            // var iconSize = size ?? new Vector2(24, 24);
+            // if (!PctService.GameGui.WorldToScreen(worldPos, out var screenPos)) return;
 
-            var topLeft = screenPos - iconSize / 2;
-            ImGui.GetForegroundDrawList().AddImage(textureHandle, topLeft, topLeft + iconSize);
+            // var topLeft = screenPos - iconSize / 2;
+            // ImGui.GetForegroundDrawList().AddImage(textureHandle, topLeft, topLeft + iconSize);
         });
     }
+    */
 
+    /*
     public static void DrawIcon(ImTextureID textureHandle, Vector3 worldPos, Vector2? size = null, float opacity = 1f, float? scaleByDistance = null)
     {
         AddDrawCommand(_ =>
         {
-            if (!PictoService.GameGui.WorldToScreen(worldPos, out var screenPos)) return;
+            if (!PctService.GameGui.WorldToScreen(worldPos, out var screenPos)) return;
 
             var iconSize = size ?? new Vector2(24, 24);
 
@@ -312,6 +313,7 @@ internal static class PictoManager
             ImGui.GetForegroundDrawList().AddImage(textureHandle, topLeft, topLeft + iconSize, Vector2.Zero, Vector2.One, tintColor);
         });
     }
+    */
 
     public static float DegreesToRadians(float degrees)
     {

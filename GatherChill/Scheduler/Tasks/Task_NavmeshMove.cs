@@ -5,9 +5,6 @@ using ECommons.Throttlers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using GatherChill.Utilities.Tools;
 using GatherChill.Utilities.Utility;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GatherChill.Scheduler.Tasks
 {
