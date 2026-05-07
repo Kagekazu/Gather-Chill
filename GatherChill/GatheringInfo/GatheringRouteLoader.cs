@@ -74,6 +74,43 @@ namespace GatherChill.GatheringInfo
             PluginLog.Information($"Loaded {Routes.Count} gathering routes");
         }
 
+        public void LoadRoutesFromDirectory(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                PluginLog.Verbose($"External route directory not found, skipping: {directory}");
+                return;
+            }
+
+            var files = Directory.GetFiles(directory, "*.json", SearchOption.AllDirectories);
+            int loaded = 0, overridden = 0;
+
+            foreach (var filePath in files)
+            {
+                try
+                {
+                    var json = File.ReadAllText(filePath);
+                    var route = JsonSerializer.Deserialize<GatheringRoute>(json, _readOptions);
+
+                    if (route == null || !ValidateRoute(route, filePath)) continue;
+
+                    bool isOverride = Routes.ContainsKey(route.RouteId);
+                    Routes[route.RouteId] = route;
+
+                    if (isOverride) overridden++;
+                    else loaded++;
+
+                    PluginLog.Verbose($"Loaded external route {route.RouteId} from {filePath}{(isOverride ? " (override)" : "")}");
+                }
+                catch (Exception ex)
+                {
+                    PluginLog.Error($"Failed to load external route {filePath}: {ex.Message}");
+                }
+            }
+
+            PluginLog.Information($"Loaded {loaded} external routes, {overridden} overrides from {directory}");
+        }
+
         // Saving Routes
 
         public void SaveRoute(GatheringRoute route, string outputDirectory)
@@ -110,7 +147,7 @@ namespace GatherChill.GatheringInfo
                 SaveRoute(route, outputDirectory);
         }
 
-        // ── Queries ───────────────────────────────────────────────────────────
+        // ── Queries 
 
         public GatheringRoute? GetRoute(uint routeId) => Routes.TryGetValue(routeId, out var route) ? route : null;
 
@@ -120,7 +157,7 @@ namespace GatherChill.GatheringInfo
 
         public List<GatheringRoute> GetRoutesForExpansion(uint expansionId) => Routes.Values.Where(r => r.ExpansionId == expansionId).ToList();
 
-        // ── Node Helpers ──────────────────────────────────────────────────────
+        // Node Helpers 
 
         public bool ContainsSpecificNode(GatheringRoute route, uint nodeId, Vector3 position)
         {
@@ -146,7 +183,7 @@ namespace GatherChill.GatheringInfo
                 route.NodeInfo.Add(new GatheringNode { NodeId = nodeId, GroupId = 0, Locations = new() { newLocation } });
         }
 
-        // ── Internals ─────────────────────────────────────────────────────────
+        // Internals
 
         private bool ValidateRoute(GatheringRoute route, string source)
         {

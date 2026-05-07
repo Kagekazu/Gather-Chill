@@ -9,8 +9,39 @@
   "nodeIds": [
     33590
   ],
-  "nodeInfo": [],
-  "groupCount": 3,
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 33590,
+      "locations": [
+        {
+          "position": {
+            "x": -694.6688,
+            "y": -55.86974,
+            "z": 435.8171
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 294,
+            "fan_EndAngle": 19,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 294,
+            "fan_EndAngle": 19,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
   "requiresFolklore": false,
   "folkloreBook": "",
   "author": "alydev",

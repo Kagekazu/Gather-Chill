@@ -45,6 +45,12 @@ namespace GatherChill.Ui.RouteWindowTabs
                 P.routeEditor.SaveAllRoutes(C.SaveLocation);
             }
 
+            if (ImGui.Button("Load External Routes"))
+            {
+                var location = C.SaveLocation;
+                P.routeEditor.LoadRoutesFromDirectory(location);
+            }
+
             fileDialogManager.Draw();
         }
     }
