@@ -9,8 +9,87 @@
   "nodeIds": [
     32767
   ],
-  "nodeInfo": [],
-  "groupCount": 3,
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 32767,
+      "locations": [
+        {
+          "position": {
+            "x": 163.0859,
+            "y": 1.274736,
+            "z": 800.1416
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 359,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 359,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": 191.6319,
+            "y": 1.253099,
+            "z": 750.9798
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 359,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 359,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        },
+        {
+          "position": {
+            "x": 150.9943,
+            "y": 1.267644,
+            "z": 746.8837
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 359,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 359,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
   "requiresFolklore": false,
   "folkloreBook": "",
   "author": "alydev",

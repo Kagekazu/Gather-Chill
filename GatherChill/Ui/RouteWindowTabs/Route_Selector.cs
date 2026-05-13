@@ -1,4 +1,6 @@
 ﻿using Dalamud.Interface.Utility.Raii;
+using ECommons.GameHelpers;
+using GatherChill.GatheringInfo;
 using GatherChill.Utilities;
 using Lumina.Excel.Sheets;
 using System;
@@ -9,8 +11,42 @@ namespace GatherChill.Ui.RouteWindowTabs
 {
     internal class Route_Selector
     {
+        public static bool Filter_Expansion = false;
+        public static bool Filter_Zone = false;
+
+        public static uint FilterExpansionId = 0;
+        public static uint FilterTerritoryId = 0;
+
+        public enum RouteSortMode
+        {
+            ByRouteId,
+            BestPath
+        }
+
+        public static RouteSortMode CurrentSortMode = RouteSortMode.ByRouteId;
+
         public static void Draw()
         {
+            ImGui.Checkbox("Filter by Expansion", ref Filter_Expansion);
+            if (Filter_Expansion)
+            {
+                ImGui.SameLine();
+                // Expansion names matching your ExpansionId values
+                string[] expansionNames = ["ARR", "HW", "StB", "ShB", "EW", "DT"];
+                int expansionIndex = (int)FilterExpansionId;
+                ImGui.SetNextItemWidth(100);
+                if (ImGui.Combo("##ExpansionFilter", ref expansionIndex, expansionNames, expansionNames.Length))
+                    FilterExpansionId = (uint)expansionIndex;
+            }
+
+            ImGui.Checkbox("Filter by current Zone", ref Filter_Zone);
+
+            if (ImGui.RadioButton("Sort by ID", CurrentSortMode == RouteSortMode.ByRouteId))
+                CurrentSortMode = RouteSortMode.ByRouteId;
+            ImGui.SameLine();
+            if (ImGui.RadioButton("Best Path", CurrentSortMode == RouteSortMode.BestPath))
+                CurrentSortMode = RouteSortMode.BestPath;
+
             var size = ImGui.GetContentRegionAvail();
             if (ImGui.BeginChild("Child: Route Selector", size, true))
             {
@@ -20,9 +56,17 @@ namespace GatherChill.Ui.RouteWindowTabs
                     ImGui.TableSetupColumn("Location");
                     ImGui.TableSetupColumn("Items");
 
-                    var sortedTable = P.routeEditor.Routes
-                                      .OrderBy(x => x.Value.TerritoryId)
-                                      .ThenBy(x => x.Key);
+                    // Filtering out the pre-requisites of filtering first (Expansion + ZoneID if need be)
+                    var filtered = P.routeEditor.Routes
+                        .Where(x => !Filter_Expansion || x.Value.ExpansionId == FilterExpansionId)
+                        .Where(x => !Filter_Zone || x.Value.TerritoryId == Player.Territory.RowId);
+
+                    // Then sorting it via the mode (so I don't have to travel across the lands reaching far and wide >.>)
+                    IEnumerable<KeyValuePair<uint, GatheringRoute>> sortedTable = CurrentSortMode switch
+                    {
+                        RouteSortMode.BestPath => SortByBestPath(filtered),
+                        _ => filtered.OrderBy(x => x.Value.TerritoryId).ThenBy(x => x.Key),
+                    };
 
                     foreach (var route in sortedTable)
                     {
@@ -40,8 +84,7 @@ namespace GatherChill.Ui.RouteWindowTabs
 
                             if (ImGui.Button($"{route.Key}"))
                             {
-                                Route_Editor.SelectedRoute = route.Key;
-
+                                Route_Editor.UpdateRoute(route.Key);
                             }
 
                             ImGui.TableNextColumn();
@@ -57,10 +100,15 @@ namespace GatherChill.Ui.RouteWindowTabs
                                 {
                                     gatherPointInfo.Map.OpenMap($"Route {route.Key}");
                                 }
-                                if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+                                if (ImGui.IsItemHovered())
                                 {
-                                    if (P.navmesh.Installed)
-                                        P.navmesh.PathToFlag();
+                                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+                                    {
+                                        Svc.Commands.ProcessCommand("/vnav flyflag");
+                                    }
+
+                                    ImGui.SetTooltip("Left click to set flag\n" +
+                                        "Right click to fly to flag");
                                 }
 
                                 ImGui.TableNextColumn();
@@ -102,6 +150,83 @@ namespace GatherChill.Ui.RouteWindowTabs
                 }
             }
             ImGui.EndChild();
+        }
+
+        private static List<KeyValuePair<uint, GatheringRoute>> SortByBestPath(IEnumerable<KeyValuePair<uint, GatheringRoute>> routes)
+        {
+            var remaining = routes.ToList();
+            if (remaining.Count == 0) return remaining;
+
+            var result = new List<KeyValuePair<uint, GatheringRoute>>();
+
+            // Group by territory, sort each group internally by nearest-neighbor
+            var byTerritory = remaining
+                .GroupBy(x => x.Value.TerritoryId)
+                .OrderBy(g => g.Key); // stable territory ordering
+
+            foreach (var group in byTerritory)
+                result.AddRange(SortGroupByNearestNeighbor(group));
+
+            return result;
+        }
+
+        private static List<KeyValuePair<uint, GatheringRoute>> SortGroupByNearestNeighbor(IEnumerable<KeyValuePair<uint, GatheringRoute>> routes)
+        {
+            var remaining = routes.ToList();
+            var result = new List<KeyValuePair<uint, GatheringRoute>>(remaining.Count);
+
+            // Seed from NW-most point within this territory
+            var startIndex = remaining
+                .Select((kvp, i) => (i, score: GetNWScore(kvp.Key)))
+                .MinBy(x => x.score).i;
+
+            var current = remaining[startIndex];
+            remaining.RemoveAt(startIndex);
+            result.Add(current);
+
+            while (remaining.Count > 0)
+            {
+                var currentPos = GetFlagPos(current.Key);
+                var nearestIndex = 0;
+                var nearestDist = float.MaxValue;
+
+                for (var i = 0; i < remaining.Count; i++)
+                {
+                    if (currentPos is not { } pos) break;
+
+                    var dist = GetFlagDistance(remaining[i].Key, pos);
+                    if (dist < nearestDist)
+                    {
+                        nearestDist = dist;
+                        nearestIndex = i;
+                    }
+                }
+
+                current = remaining[nearestIndex];
+                remaining.RemoveAt(nearestIndex);
+                result.Add(current);
+            }
+
+            return result;
+        }
+
+        // X + Y combined gives lowest score to the most NW point
+        private static float GetNWScore(uint routeId)
+        {
+            var pos = GetFlagPos(routeId);
+            return pos.HasValue ? pos.Value.X + pos.Value.Y : float.MaxValue;
+        }
+
+        private static Vector2? GetFlagPos(uint routeId)
+        {
+            if (!SheetInfo.TryGetValue(routeId, out var info)) return null;
+            return new Vector2(info.Map.X, info.Map.Y);
+        }
+
+        private static float GetFlagDistance(uint routeId, Vector2 from)
+        {
+            var pos = GetFlagPos(routeId);
+            return pos.HasValue ? Vector2.Distance(from, pos.Value) : float.MaxValue;
         }
     }
 }

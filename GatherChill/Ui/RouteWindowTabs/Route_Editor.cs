@@ -21,6 +21,30 @@ namespace GatherChill.Ui.RouteWindowTabs
         private static int selectedLocationIndex = 0;
         private static Vector3 selectedNodePos = Vector3.Zero;
 
+        public static string? LastSavedAt = null;
+
+        public static void UpdateRoute(uint selectedRoute)
+        {
+            if (selectedRoute != SelectedRoute && C.SaveOnRouteChange)
+            {
+                if (P.routeEditor.Routes.TryGetValue(SelectedRoute, out var routeInfo))
+                {
+                    P.routeEditor.SaveRoute(routeInfo, C.SaveLocation);
+                    LastSavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                }
+            }
+            SelectedRoute = selectedRoute;
+        }
+
+        public static void SavePreviousRoute()
+        {
+            if (P.routeEditor.Routes.TryGetValue(SelectedRoute, out var routeInfo))
+            {
+                LastSavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                P.routeEditor.SaveRoute(routeInfo, C.SaveLocation);
+            }
+        }
+
         public static void Draw()
         {
             if (P.routeEditor.Routes.TryGetValue(SelectedRoute, out var routeInfo))
@@ -28,6 +52,7 @@ namespace GatherChill.Ui.RouteWindowTabs
                 ImGui.Text($"Route: {SelectedRoute}");
                 if (ImGui.Button("Save Route"))
                 {
+                    LastSavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                     P.routeEditor.SaveRoute(routeInfo, C.SaveLocation);
                 }
                 ImGui.SameLine();
@@ -571,7 +596,12 @@ namespace GatherChill.Ui.RouteWindowTabs
                     if (ImGui.Button("Pathfind to fan"))
                     {
                         var randomPos = NodeLocationExtensions.GetRandomGatherPosition(editorNode, Player.Position);
-                        P.navmesh.PathfindAndMoveTo(randomPos, true);
+                        IceLogging.Verbose($"Node Position: {randomPos:N2}", "Route Editor");
+                        bool flying = false;
+                        if (Player.Mounted)
+                            flying = true;
+
+                        P.navmesh.PathfindAndMoveTo(randomPos, flying);
                     }
 
                     ImGui.PopID();

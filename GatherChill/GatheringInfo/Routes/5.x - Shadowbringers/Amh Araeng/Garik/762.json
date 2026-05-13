@@ -9,8 +9,39 @@
   "nodeIds": [
     33592
   ],
-  "nodeInfo": [],
-  "groupCount": 3,
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 33592,
+      "locations": [
+        {
+          "position": {
+            "x": -268.3413,
+            "y": 29.31399,
+            "z": -524.6315
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 194,
+            "fan_EndAngle": 325,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 194,
+            "fan_EndAngle": 325,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
   "requiresFolklore": false,
   "folkloreBook": "",
   "author": "Ice",

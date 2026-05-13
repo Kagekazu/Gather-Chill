@@ -9,7 +9,38 @@
   "nodeIds": [
     33024
   ],
-  "nodeInfo": [],
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 33024,
+      "locations": [
+        {
+          "position": {
+            "x": -871.5481,
+            "y": 26.48318,
+            "z": 80.61352
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 131,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0.76
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 0,
+            "fan_EndAngle": 131,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
   "groupCount": 3,
   "requiresFolklore": false,
   "folkloreBook": "",

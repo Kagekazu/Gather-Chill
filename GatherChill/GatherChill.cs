@@ -58,7 +58,8 @@ public sealed class GatherChill : IDalamudPlugin
 
         routeEditor = new();
         routeEditor.LoadAllRoutes();
-        routeEditor.LoadRoutesFromDirectory(C.SaveLocation);
+        if (C.LoadExternalRoutes)
+            routeEditor.LoadRoutesFromDirectory(C.SaveLocation);
 
         // all the windows
         windowSystem = new();

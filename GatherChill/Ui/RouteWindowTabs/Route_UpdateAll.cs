@@ -42,6 +42,7 @@ namespace GatherChill.Ui.RouteWindowTabs
                     }
                 }
 
+                Route_Editor.LastSavedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 P.routeEditor.SaveAllRoutes(C.SaveLocation);
             }
 

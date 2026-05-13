@@ -2,9 +2,13 @@
   "Author": "Ice",
   "Name": "Gather & Chill",
   "Punchline": "The gathering companion that we all needed.",
-  "Description": "A little helper to go gather your heart out.",
+  "Description": "A gathering plugin that will help you with your gathering needs. Between gathering items for you, or self applying buffs to make the task of gathering monotonous.",
   "ApplicableVersion": "any",
   "Tags": [
-    "Gatherers"
+    "Gather",
+    "Miner",
+    "Botanist",
+    "Fisher",
+    "Crafting Helper"
   ]
 }

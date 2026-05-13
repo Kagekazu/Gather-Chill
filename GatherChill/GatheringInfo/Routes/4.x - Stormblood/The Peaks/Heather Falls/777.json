@@ -9,8 +9,39 @@
   "nodeIds": [
     33028
   ],
-  "nodeInfo": [],
-  "groupCount": 3,
+  "nodeInfo": [
+    {
+      "groupId": 0,
+      "nodeId": 33028,
+      "locations": [
+        {
+          "position": {
+            "x": 454.6367,
+            "y": 227.1414,
+            "z": -731.7471
+          },
+          "allowFlying": true,
+          "flight_FanInfo": {
+            "fan_StartAngle": 94,
+            "fan_EndAngle": 231,
+            "fan_DistanceMin": 2.5,
+            "fan_DistanceMax": 4,
+            "fan_Height": 0
+          },
+          "gathering_FanInfo": {
+            "fan_StartAngle": 94,
+            "fan_EndAngle": 231,
+            "fan_DistanceMin": 1,
+            "fan_DistanceMax": 2,
+            "fan_Height": 0
+          },
+          "useSpecificWalkingSpots": false,
+          "walkablePositions": []
+        }
+      ]
+    }
+  ],
+  "groupCount": 1,
   "requiresFolklore": false,
   "folkloreBook": "",
   "author": "liza",

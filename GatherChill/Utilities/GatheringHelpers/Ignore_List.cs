@@ -10,7 +10,7 @@ public static partial class Gather_Util
     // Either old routes that no longer exist in the world, or just invalid 
     public static List<uint> Ignore_Routes = new()
     {
-        677, 674, // Old Diadem Building Items
+        679, 678, 677, 676, 675, 674, 673, 672, 668,  // Old Diadem Building Items
         541, 542, 543, 544, 545, 546, 547, 548, 549, 550 // Namazu Questline
     };
 }

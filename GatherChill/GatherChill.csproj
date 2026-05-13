@@ -23,6 +23,10 @@
 		<EmbeddedResource Include="GatheringInfo\Routes\**\*.json" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Include="GatherChill.json" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="ECommons" Version="3.2.0.16" />
     <PackageReference Include="Pictomancy" Version="1.0.3" />
