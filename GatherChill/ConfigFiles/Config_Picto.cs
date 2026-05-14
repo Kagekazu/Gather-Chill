@@ -11,6 +11,8 @@ public partial class Config
     public Vector4 Picto_GatherFanColor { get; set; } = new Vector4(0f, 0f, 1f, 1f);
     public Vector4 Picto_FlightFanColor { get; set; } = new Vector4(0f, 0f, 1f, 1f);
     public Vector4 Picto_SelectedFan { get; set; } = new Vector4(0f, 0f, 1f, 1f);
+    public Vector4 Picto_SelectedSphere { get; set; } = new Vector4(0f, 0f, 1f, 1f);
+    public Vector4 Picto_GeneralSphere { get; set; } = new Vector4(0f, 0f, 1f, 1f);
     public Vector4 Picto_TextColor { get; set; } = new Vector4(1f, 1f, 1f, 1f);
 
     public Dictionary<int, ColorEditor> Picto_GroupColors { get; set; } = new()

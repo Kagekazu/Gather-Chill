@@ -408,6 +408,7 @@ namespace GatherChill.Ui.RouteWindowTabs
                             {
                                 PictoManager.DrawVfxCircle($"{location.Position}", location.Position, pictoColor);
                                 PictoManager.DrawGatheringFan(location, selectedNodePos);
+                                PictoManager.DrawSphere(location, selectedNodePos);
                             }
 
                             ImGui.PushID($"{nodeGroup.NodeId}");
@@ -712,13 +713,13 @@ namespace GatherChill.Ui.RouteWindowTabs
 
                         ImGui.PushID($"Picto Group Colors {group.Key}");
 
-                        if (ImGui.ColorEdit4("Primary Color", ref primary, ImGuiColorEditFlags.PickerHueWheel))
+                        if (ImGui.ColorEdit4("Primary Color", ref primary))
                         {
                             C.Picto_GroupColors[group.Key].Primary = primary;
                             C.SaveDebounced();
                         }
 
-                        if (ImGui.ColorEdit4("Secondary Color", ref secondary, ImGuiColorEditFlags.PickerHueWheel))
+                        if (ImGui.ColorEdit4("Secondary Color", ref secondary))
                         {
                             C.Picto_GroupColors[group.Key].Secondary = secondary;
                             C.SaveDebounced();
@@ -733,23 +734,37 @@ namespace GatherChill.Ui.RouteWindowTabs
                 if (ImGui.CollapsingHeader("Picto Editor Pt. 2"))
                 {
                     var color_GatherFan = C.Picto_GatherFanColor;
-                    if (ImGui.ColorEdit4("Gathering Fan", ref color_GatherFan, ImGuiColorEditFlags.PickerHueWheel))
+                    if (ImGui.ColorEdit4("Gathering Fan", ref color_GatherFan))
                     {
                         C.Picto_GatherFanColor = color_GatherFan;
                         C.SaveDebounced();
                     }
 
                     var color_FlightFan = C.Picto_FlightFanColor;
-                    if (ImGui.ColorEdit4("Landing Fan", ref color_FlightFan, ImGuiColorEditFlags.PickerHueWheel))
+                    if (ImGui.ColorEdit4("Landing Fan", ref color_FlightFan))
                     {
                         C.Picto_FlightFanColor = color_FlightFan;
                         C.SaveDebounced();
                     }
 
                     var color_SelectedFan = C.Picto_SelectedFan;
-                    if (ImGui.ColorEdit4("Selected Fan", ref color_SelectedFan, ImGuiColorEditFlags.PickerHueWheel))
+                    if (ImGui.ColorEdit4("Selected Fan", ref color_SelectedFan))
                     {
                         C.Picto_SelectedFan = color_SelectedFan;
+                        C.SaveDebounced();
+                    }
+
+                    var color_GeneralSphere = C.Picto_GeneralSphere;
+                    if (ImGui.ColorEdit4("General Sphere", ref color_GeneralSphere))
+                    {
+                        C.Picto_GeneralSphere = color_GeneralSphere;
+                        C.SaveDebounced();
+                    }
+
+                    var color_SelectedSphere = C.Picto_SelectedSphere;
+                    if (ImGui.ColorEdit4("Selected Sphere", ref color_SelectedSphere))
+                    {
+                        C.Picto_SelectedSphere = color_SelectedSphere;
                         C.SaveDebounced();
                     }
                 }

@@ -114,7 +114,7 @@ internal static class PictoManager
                     gatherFan.Fan_DistanceMax,
                     DegreesToRadians(pictoStart),
                     DegreesToRadians(360),
-                    Utils.ToUintABGR(fanColor_Gather));
+                    Utils.ToUintABGR(fanColor_Gather), p: new PctDxParams { OccludedAlpha = 0 });
 
                 pictoDraw.AddFanFilled(
                     gatherFanPos,
@@ -122,7 +122,7 @@ internal static class PictoManager
                     gatherFan.Fan_DistanceMax,
                     DegreesToRadians(0),
                     DegreesToRadians(pictoEnd),
-                    Utils.ToUintABGR(fanColor_Gather));
+                    Utils.ToUintABGR(fanColor_Gather), p: new PctDxParams { OccludedAlpha = 0 });
             });
         }
         else
@@ -135,7 +135,7 @@ internal static class PictoManager
                     gatherFan.Fan_DistanceMax,
                     DegreesToRadians(pictoStart),
                     DegreesToRadians(pictoEnd),
-                    Utils.ToUintABGR(fanColor_Gather));
+                    Utils.ToUintABGR(fanColor_Gather), p: new PctDxParams { OccludedAlpha = 0 });
             });
         }
 
@@ -153,7 +153,7 @@ internal static class PictoManager
                     flightFan.Fan_DistanceMax,
                     DegreesToRadians(flight_PictoStart),
                     DegreesToRadians(360),
-                    Utils.ToUintABGR(fanColor_Flight));
+                    Utils.ToUintABGR(fanColor_Flight), p: new PctDxParams { OccludedAlpha = 0 });
 
                 pictoDraw.AddFanFilled(
                     flight_FanPos,
@@ -161,7 +161,7 @@ internal static class PictoManager
                     flightFan.Fan_DistanceMax,
                     DegreesToRadians(0),
                     DegreesToRadians(flight_PictoEnd),
-                    Utils.ToUintABGR(fanColor_Flight));
+                    Utils.ToUintABGR(fanColor_Flight), p: new PctDxParams { OccludedAlpha = 0 });
             });
         }
         else
@@ -174,9 +174,22 @@ internal static class PictoManager
                     flightFan.Fan_DistanceMax,
                     DegreesToRadians(flight_PictoStart),
                     DegreesToRadians(flight_PictoEnd),
-                    Utils.ToUintABGR(fanColor_Flight));
+                    Utils.ToUintABGR(fanColor_Flight), p: new PctDxParams { OccludedAlpha = 0 });
             });
         }
+    }
+    public static void DrawSphere(NodeLocation location, Vector3 selectedNode)
+    {
+        var color = C.Picto_GeneralSphere;
+        if (location.Position == selectedNode)
+        {
+            color = C.Picto_SelectedSphere;
+        }
+
+        AddDrawCommand(pictoDraw =>
+        {
+            pictoDraw.AddSphere(location.Position, 0.5f, ToUintABGR(color), p: new PctDxParams { OccludedAlpha = 0 });
+        });
     }
     
     /// <summary>
