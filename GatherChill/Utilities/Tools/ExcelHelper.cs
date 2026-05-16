@@ -5,14 +5,14 @@ namespace GatherChill.Utilities.Tools;
 
 internal static class ExcelHelper
 {
-    internal static ExcelSheet<GatheringPoint>? Sheet_GatherPoint;
-    internal static ExcelSheet<GatheringPointTransient>? Sheet_GatherPointTransient;
-    internal static ExcelSheet<GatheringRarePopTimeTable>? Sheet_GatherTimeTable;
-    internal static ExcelSheet<GatheringItem>? Sheet_GatheringItem;
-    internal static ExcelSheet<ExportedGatheringPoint>? Sheet_ExportedGatherPoints;
+    internal static ExcelSheet<GatheringPoint> Sheet_GatherPoint;
+    internal static ExcelSheet<GatheringPointTransient> Sheet_GatherPointTransient;
+    internal static ExcelSheet<GatheringRarePopTimeTable> Sheet_GatherTimeTable;
+    internal static ExcelSheet<GatheringItem> Sheet_GatheringItem;
+    internal static ExcelSheet<ExportedGatheringPoint> Sheet_ExportedGatherPoints;
 
-    internal static ExcelSheet<TerritoryType>? Sheet_TerritoryType;
-    internal static ExcelSheet<PlaceName>? Sheet_PlaceName;
+    internal static ExcelSheet<TerritoryType> Sheet_TerritoryType;
+    internal static ExcelSheet<PlaceName> Sheet_PlaceName;
 
     public static void Init()
     {

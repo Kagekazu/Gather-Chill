@@ -13,14 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="GatheringInfo\Heavensword\**" />
+    <Compile Remove="GatheringRoutes\Heavensword\**" />
     <Compile Remove="Ui\DebugTabs\**" />
-    <EmbeddedResource Remove="GatheringInfo\Heavensword\**" />
+    <EmbeddedResource Remove="GatheringRoutes\Heavensword\**" />
     <EmbeddedResource Remove="Ui\DebugTabs\**" />
   </ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="GatheringInfo\Routes\**\*.json" />
+		<EmbeddedResource Include="GatheringRoutes\Routes\**\*.json" />
 	</ItemGroup>
 
 	<ItemGroup>
