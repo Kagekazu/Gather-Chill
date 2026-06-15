@@ -207,6 +207,15 @@ namespace GatherChill.Scheduler.Tasks
         /// <summary>Stuck ladder: wait → jump → stop and restart path → give up after MaxStuckRecoveries.</summary>
         private static unsafe bool CheckAndHandleStuck(string context)
         {
+            // A pathfind is still being computed (no path to follow yet) — standing still is expected here.
+            // Counting that as "stuck" cancels long fly pathfinds before they finish and, via the mesh
+            // reset below, spirals the mesh to 0%. Only judge stuck once a path is actually being followed.
+            if (!P.navmesh.NavRunning() && P.navmesh.IsPathfindInProgress())
+            {
+                BeginStuckTracking();
+                return false;
+            }
+
             var currentPos = Player.Position;
             var timeSinceLastChange = (DateTime.Now - _lastPositionChange).TotalMilliseconds;
 
@@ -227,7 +236,7 @@ namespace GatherChill.Scheduler.Tasks
             {
                 var msg = $"Stuck too many times ({context})";
                 NavmeshRuntime.SetFailure(msg);
-                StopOwned(cancelPathfind: true);
+                StopOwned();
                 if (EzThrottler.Throttle($"Navmesh stuck give up ({context})", 3000))
                     LogNav(msg, true);
 
@@ -248,7 +257,7 @@ namespace GatherChill.Scheduler.Tasks
 
             if (EzThrottler.Throttle("Stuck - stopping navmesh", 1000))
             {
-                StopOwned(cancelPathfind: true);
+                StopOwned();
                 BeginStuckTracking();
                 LogNav($"Stuck, restarting path ({context})", false);
             }
