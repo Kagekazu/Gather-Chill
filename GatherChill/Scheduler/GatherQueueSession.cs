@@ -35,6 +35,12 @@ internal static class GatherQueueSession
             return 0;
         }
 
+        if (route.RouteId != routeId)
+        {
+            IceLogging.Warning($"List+: route key {routeId} mismatches route file id {route.RouteId}; using route file.");
+            routeId = route.RouteId;
+        }
+
         if (Gather_Util.SheetInfo.TryGetValue(routeId, out var sheet) && sheet.TerritoryId != route.TerritoryId)
         {
             IceLogging.Warning(

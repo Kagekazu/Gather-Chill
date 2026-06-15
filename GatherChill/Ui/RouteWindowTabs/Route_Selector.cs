@@ -74,9 +74,10 @@ namespace GatherChill.Ui.RouteWindowTabs
             var size = ImGui.GetContentRegionAvail();
             if (ImGui.BeginChild("Child: Route Selector", size, true))
             {
-                if (ImGui.BeginTable("Route Selector Table", 5, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.SizingFixedFit))
+                if (ImGui.BeginTable("Route Selector Table", 6, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.SizingFixedFit))
                 {
-                    ImGui.TableSetupColumn("Route ID", ImGuiTableColumnFlags.WidthFixed, 108f);
+                    ImGui.TableSetupColumn("Route ID", ImGuiTableColumnFlags.WidthFixed, 72f);
+                    ImGui.TableSetupColumn("List+", ImGuiTableColumnFlags.WidthFixed, 52f);
                     ImGui.TableSetupColumn("Class", ImGuiTableColumnFlags.WidthFixed, 32f);
                     ImGui.TableSetupColumn("Location");
                     ImGui.TableSetupColumn("Items");
@@ -90,97 +91,107 @@ namespace GatherChill.Ui.RouteWindowTabs
                         .Where(x => FilterJob == 0 || x.Value.GatheringJobId == FilterJob);
 
                     // Then sorting it via the mode (so I don't have to travel across the lands reaching far and wide >.>)
-                    IEnumerable<KeyValuePair<uint, GatheringRoute>> sortedTable = CurrentSortMode switch
+                    List<KeyValuePair<uint, GatheringRoute>> sortedTable = CurrentSortMode switch
                     {
                         RouteSortMode.BestPath => SortByBestPath(filtered),
-                        _ => filtered.OrderBy(x => x.Key),
+                        _ => filtered.OrderBy(x => x.Key).ToList(),
                     };
 
                     foreach (var route in sortedTable)
                     {
+                        var routeId = route.Key;
+                        var ignored = Ignore_Routes.Contains(routeId);
+
                         ImGui.TableNextRow();
-                        if (Route_Editor.SelectedRoute == route.Key)
+                        ImGui.PushID((int)routeId);
+
+                        if (Route_Editor.SelectedRoute == routeId)
                             ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg0, ImGui.GetColorU32(new Vector4(0.0f, 1.0f, 0.2f, 0.25f)));
-                        if (Ignore_Routes.Contains(route.Key))
+                        if (ignored)
                             ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg0, ImGui.GetColorU32(new Vector4(0.9f, 0.5f, 0.5f, 1.0f)));
 
-                        using (ImRaii.Disabled(Ignore_Routes.Contains(route.Key)))
+                        ImGui.TableSetColumnIndex(0);
+                        if (ignored)
+                            ImGui.BeginDisabled();
+                        if (ImGui.Button($"{routeId}##open{routeId}"))
+                            Route_Editor.UpdateRoute(routeId);
+                        if (ImGui.IsItemHovered())
+                            ImGui.SetTooltip($"Open route {routeId} in editor");
+                        if (ignored)
+                            ImGui.EndDisabled();
+
+                        ImGui.TableSetColumnIndex(1);
+                        if (ignored)
                         {
-                            ImGui.PushID($"{route.Key}");
+                            ImGui.TextDisabled("List+");
+                        }
+                        else if (ImGui.SmallButton($"List+##list{routeId}"))
+                        {
+                            if (GatherQueueSession.AddRouteItems(routeId) > 0)
+                                P.routeWindow.FocusGatherListTab = true;
+                        }
+                        if (!ignored && ImGui.IsItemHovered())
+                            ImGui.SetTooltip($"Add all items from route {routeId} to the Gather List (Want = 1)");
 
-                            ImGui.TableSetColumnIndex(0);
+                        ImGui.TableSetColumnIndex(2);
+                        var job = route.Value.GatheringJobId;
+                        if (Gather_Util.JobIcons.TryGetValue(job, out var jobIcon))
+                            ImGui.Image(jobIcon.GetWrapOrEmpty().Handle, new(24, 24));
 
-                            if (ImGui.Button($"{route.Key}"))
-                                Route_Editor.UpdateRoute(route.Key);
-                            if (ImGui.IsItemHovered())
-                                ImGui.SetTooltip("Open route in editor");
+                        ImGui.TableSetColumnIndex(3);
+                        ImGui.Text($"{route.Value.ZoneName}");
+                        if (ImGui.IsItemHovered())
+                            ImGui.SetTooltip($"Route {routeId} — territory {route.Value.TerritoryId}");
+
+                        SheetInfo.TryGetValue(routeId, out var gatherPointInfo);
+
+                        if (gatherPointInfo != null)
+                        {
                             ImGui.SameLine();
-                            if (ImGui.SmallButton("List+##add"))
-                            {
-                                if (GatherQueueSession.AddRouteItems(route.Key) > 0)
-                                    P.routeWindow.FocusGatherListTab = true;
-                            }
+                            ImGui.PushID("map");
+                            if (ImGuiEx.IconButton(FontAwesomeIcon.Flag, "flag"))
+                                gatherPointInfo.Map.OpenMap($"Route {routeId}");
+                            ImGui.PopID();
                             if (ImGui.IsItemHovered())
-                                ImGui.SetTooltip("Add all items from this route to the Gather List (Want = 1)");
-
-                            ImGui.TableSetColumnIndex(1);
-                            var job = route.Value.GatheringJobId;
-                            if (Gather_Util.JobIcons.TryGetValue(job, out var jobIcon))
-                                ImGui.Image(jobIcon.GetWrapOrEmpty().Handle, new(24, 24));
-
-                            ImGui.TableSetColumnIndex(2);
-                            ImGui.Text($"{route.Value.ZoneName}");
-                            if (ImGui.IsItemHovered())
-                                ImGui.SetTooltip($"ID: {route.Value.TerritoryId}");
-
-                            SheetInfo.TryGetValue(route.Key, out var gatherPointInfo);
-
-                            if (gatherPointInfo != null)
                             {
-                                ImGui.SameLine();
-                                if (ImGuiEx.IconButton(FontAwesomeIcon.Flag, $"{route.Key}_Map"))
-                                    gatherPointInfo.Map.OpenMap($"Route {route.Key}");
-                                if (ImGui.IsItemHovered())
-                                {
-                                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
-                                        Svc.Commands.ProcessCommand("/vnav flyflag");
+                                if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+                                    Svc.Commands.ProcessCommand("/vnav flyflag");
 
-                                    ImGui.SetTooltip("Left click to set flag\n" +
-                                        "Right click to fly to flag");
-                                }
+                                ImGui.SetTooltip("Left click to set flag\n" +
+                                    "Right click to fly to flag");
                             }
+                        }
 
-                            ImGui.TableSetColumnIndex(3);
-                            if (gatherPointInfo != null)
+                        ImGui.TableSetColumnIndex(4);
+                        if (gatherPointInfo != null)
+                        {
+                            foreach (var item in gatherPointInfo.ItemIds)
                             {
-                                foreach (var item in gatherPointInfo.ItemIds)
+                                if (Svc.Data.GetExcelSheet<Item>().TryGetRow(item, out var itemInfo))
                                 {
-                                    if (Svc.Data.GetExcelSheet<Item>().TryGetRow(item, out var itemInfo))
-                                    {
-                                        var iconId = (int)itemInfo.Icon;
-                                        var icon = Svc.Texture.GetFromGameIcon(iconId).GetWrapOrEmpty();
-                                        ImGui.Image(icon.Handle, new(24, 24));
-                                        if (ImGui.IsItemHovered())
-                                            ImGui.SetTooltip($"{itemInfo.Name}");
-                                        if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-                                            ImGui.SetClipboardText($"{itemInfo.Name}");
-                                        ImGui.SameLine();
-                                    }
-                                }
-                            }
-
-                            ImGui.TableSetColumnIndex(4);
-                            if (gatherPointInfo?.TimedInfo.Count > 0)
-                            {
-                                foreach (var time in gatherPointInfo.TimedInfo)
-                                {
-                                    ImGui.Text($"{time.StartFormatted} - {time.EndFormatted}");
+                                    var iconId = (int)itemInfo.Icon;
+                                    var icon = Svc.Texture.GetFromGameIcon(iconId).GetWrapOrEmpty();
+                                    ImGui.Image(icon.Handle, new(24, 24));
+                                    if (ImGui.IsItemHovered())
+                                        ImGui.SetTooltip($"{itemInfo.Name}");
+                                    if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                                        ImGui.SetClipboardText($"{itemInfo.Name}");
                                     ImGui.SameLine();
                                 }
                             }
-
-                            ImGui.PopID();
                         }
+
+                        ImGui.TableSetColumnIndex(5);
+                        if (gatherPointInfo?.TimedInfo.Count > 0)
+                        {
+                            foreach (var time in gatherPointInfo.TimedInfo)
+                            {
+                                ImGui.Text($"{time.StartFormatted} - {time.EndFormatted}");
+                                ImGui.SameLine();
+                            }
+                        }
+
+                        ImGui.PopID();
                     }
 
                     ImGui.EndTable();
