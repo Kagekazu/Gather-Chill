@@ -84,14 +84,12 @@ internal static class GatherRouteNavigation
     /// Short final walk to the gather fan after node availability was confirmed within load range.
     /// Returns true only when standing at the gather fan on foot.
     /// </summary>
-    public static bool TryApproachGatherFan(NodeLocation location)
+    public static bool TryApproachGatherFan(NodeLocation location, Vector3 nodeWorldPos)
     {
-        var nodePos = location.Position;
-
-        if (_validationGatherFan is null || _validationNodePos != nodePos)
+        if (_validationGatherFan is null || _validationNodePos != nodeWorldPos)
         {
-            _validationNodePos = nodePos;
-            _validationGatherFan = ResolveGatherFanPoint(location, nodePos);
+            _validationNodePos = nodeWorldPos;
+            _validationGatherFan = ResolveGatherFanPoint(location, nodeWorldPos);
         }
 
         var gatherFan = _validationGatherFan.Value;

@@ -28,14 +28,32 @@ internal static class GatherQueueSession
 
     public static int AddRouteItems(uint routeId, int defaultQuantity = 1)
     {
-        if (!Gather_Util.SheetInfo.TryGetValue(routeId, out var sheet))
+        var route = P.routeEditor.GetRoute(routeId);
+        if (route == null)
         {
-            IceLogging.Warning($"List+: no gather sheet data for route {routeId}.");
+            IceLogging.Warning($"List+: route {routeId} is not loaded.");
+            return 0;
+        }
+
+        if (Gather_Util.SheetInfo.TryGetValue(routeId, out var sheet) && sheet.TerritoryId != route.TerritoryId)
+        {
+            IceLogging.Warning(
+                $"List+: sheet territory for route {routeId} does not match route file ({sheet.ZoneName} vs {route.ZoneName}).");
+            return 0;
+        }
+
+        var itemIds = Gather_Util.GetItemIdsForRoute(route);
+        if (itemIds.Count == 0 && sheet != null)
+            itemIds = sheet.ItemIds;
+
+        if (itemIds.Count == 0)
+        {
+            IceLogging.Warning($"List+: no items found for route {routeId} ({route.ZoneName}).");
             return 0;
         }
 
         var added = 0;
-        foreach (var itemId in sheet.ItemIds)
+        foreach (var itemId in itemIds)
         {
             if (PendingTargets.Any(t => t.RouteId == routeId && t.ItemId == itemId))
                 continue;
@@ -45,7 +63,7 @@ internal static class GatherQueueSession
         }
 
         if (added > 0)
-            IceLogging.Info($"List+: added {added} item(s) from route {routeId}.");
+            IceLogging.Info($"List+: added {added} item(s) from route {routeId} ({route.ZoneName}).");
 
         return added;
     }

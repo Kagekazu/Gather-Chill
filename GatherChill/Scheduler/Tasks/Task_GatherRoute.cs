@@ -232,7 +232,8 @@ namespace GatherChill.Scheduler.Tasks
                 return false;
             }
 
-            if (!GatherRouteNavigation.TryApproachGatherFan(approachLocation))
+            var nodeWorldPos = validNode.Position;
+            if (!GatherRouteNavigation.TryApproachGatherFan(approachLocation, nodeWorldPos))
                 return false;
 
             P.navmesh.StopIfOwned();
