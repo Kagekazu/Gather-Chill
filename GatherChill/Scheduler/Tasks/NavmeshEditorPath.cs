@@ -16,7 +16,7 @@ internal static class NavmeshEditorPath
 {
     private static bool _active;
 
-    public static bool TryEnqueuePathTo(Vector3 destination, bool? forceFly = null, float? closeRange = null, string label = "Editor pathfind", NodeLocation? node = null)
+    public static bool TryEnqueuePathTo(Vector3 destination, bool? forceFly = null, float? closeRange = null, string label = "Editor pathfind", NodeLocation? node = null, bool groundSnap = false)
     {
         if (!C.NavmeshMovementEnabled)
         {
@@ -34,7 +34,9 @@ internal static class NavmeshEditorPath
             return false;
         }
 
-        destination = NavmeshMovement.ResolvePathPoint(destination);
+        destination = groundSnap
+            ? NavmeshMovement.ResolveGroundPathPoint(destination)
+            : NavmeshMovement.ResolvePathPoint(destination);
         var range = closeRange ?? NavmeshMovement.FinalApproachCloseRange;
 
         if (node != null && !node.AllowFlying)
@@ -58,7 +60,8 @@ internal static class NavmeshEditorPath
             forceFly: node.AllowFlying ? null : false,
             closeRange: NavmeshMovement.FinalApproachCloseRange,
             label: "Editor pathfind (gather fan)",
-            node);
+            node,
+            groundSnap: true);
     }
 
     public static bool TryEnqueueFlightFan(NodeLocation node)

@@ -31,9 +31,14 @@ internal static unsafe class NavmeshMovement
     public static float InteractDistance => C.NavmeshInteractDistance;
 
     public const float GatherFanCloseRange = FinalApproachCloseRange;
+    public const float NodeValidationCloseRange = 2f;
+    public const float GroundValidationWalkRange = 5f; // Fly until this close, then dismount for a short ground walk
 
     /// <summary>Keep approach points off node centers embedded in walls/cliffs.</summary>
     public const float GatherNodeStandoff = 3f;
+
+    /// <summary>Below this horizontal distance from node center, treat the point as "on" the node and apply standoff.</summary>
+    private const float NodeCenterEpsilon = 0.5f;
 
     // One-shot flag: we only StopPath() once per gather window so vnavmesh keeps its loaded mesh.
     private static bool _haltedNavForGathering;
@@ -122,13 +127,13 @@ internal static unsafe class NavmeshMovement
 
     /// <summary>
     /// Route fan points can land on the node center; many nodes sit in cliffs/walls.
-    /// Push the standoff horizontally toward the player so pathfinding targets walkable ground.
+    /// Only pushes when the point sits on the node center — configured gather fans (1–2y out) are kept as-is.
     /// </summary>
     public static Vector3 ApplyNodeStandoff(Vector3 approachPoint, Vector3 nodePos, float minHorizontalDistance = GatherNodeStandoff)
     {
         var offset = approachPoint - nodePos;
         offset.Y = 0;
-        if (offset.Length() >= minHorizontalDistance)
+        if (offset.Length() >= NodeCenterEpsilon)
             return approachPoint;
 
         var towardPlayer = Player.Position - nodePos;
@@ -140,6 +145,17 @@ internal static unsafe class NavmeshMovement
         var standoff = nodePos + towardPlayer * minHorizontalDistance;
         standoff.Y = approachPoint.Y;
         return standoff;
+    }
+
+    /// <summary>Snap gather-fan coordinates onto walkable floor at the target XZ, not the player's altitude.</summary>
+    public static Vector3 ResolveGroundPathPoint(Vector3 position)
+    {
+        if (!P.navmesh.Installed || !P.navmesh.IsReady())
+            return position;
+
+        var indoor = IsIndoorTerritory(Player.Territory.RowId);
+        var snapped = P.navmesh.TryGetPointOnFloor(position, indoor, 4f);
+        return snapped ?? position;
     }
 
     /// <summary>

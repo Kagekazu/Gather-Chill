@@ -22,6 +22,10 @@ internal static class GatherRouteNavigation
     private static uint _gatherFanNodeId;
     private static Vector3? _gatherFanPoint;
 
+    // Cached gather fan while approaching a route location to validate node spawn.
+    private static Vector3? _validationGatherFan;
+    private static Vector3 _validationNodePos;
+
     public static bool IsGatheringSessionActive() => NavmeshMovement.IsGatheringSessionActive();
 
     public static void StopMovementForGathering() => NavmeshMovement.HaltNavmeshForGathering();
@@ -30,6 +34,12 @@ internal static class GatherRouteNavigation
     {
         _gatherFanNodeId = 0;
         _gatherFanPoint = null;
+    }
+
+    public static void ResetValidationApproach()
+    {
+        _validationGatherFan = null;
+        _validationNodePos = default;
     }
 
     public static bool IsCorrectTerritory(GatheringRoute route)
@@ -61,6 +71,58 @@ internal static class GatherRouteNavigation
         Task_NavmeshMove.Task_FlyTo(NavmeshMovement.ResolvePathPoint(point), waitForBusy: true, closeRange, stayMounted) == true;
 
     /// <summary>
+    /// Fly in when far away; once within node load range, keep flying until ~5y from the gather fan,
+    /// then dismount for a short ground walk so the node object can spawn. Returns true only when at the gather fan on foot.
+    /// </summary>
+    public static bool TryApproachForNodeValidation(NodeLocation location)
+    {
+        var nodePos = location.Position;
+
+        if (_validationGatherFan is null || _validationNodePos != nodePos)
+        {
+            _validationNodePos = nodePos;
+            _validationGatherFan = ResolveGatherFanPoint(location, nodePos);
+        }
+
+        var gatherFan = _validationGatherFan.Value;
+
+        if (Player.DistanceTo(nodePos) > NavmeshMovement.LoadRange)
+        {
+            TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true);
+            return false;
+        }
+
+        if (NavmeshMovement.HorizontalDistance(gatherFan) > NavmeshMovement.GroundValidationWalkRange)
+        {
+            if (location.AllowFlying && NavmeshMovement.CanUseFlyMovement())
+            {
+                Task_NavmeshMove.Task_FlyTo(
+                    NavmeshMovement.ResolvePathPoint(gatherFan),
+                    waitForBusy: false,
+                    NavmeshMovement.GroundValidationWalkRange,
+                    stayMounted: true);
+            }
+            else
+            {
+                Task_NavmeshMove.Task_GroundTo(gatherFan, waitForBusy: false, NavmeshMovement.GroundValidationWalkRange);
+            }
+
+            return false;
+        }
+
+        if (Player.Mounted)
+        {
+            Utils.Dismount();
+            return false;
+        }
+
+        return Task_NavmeshMove.Task_GroundTo(
+            gatherFan,
+            waitForBusy: false,
+            NavmeshMovement.NodeValidationCloseRange) == true;
+    }
+
+    /// <summary>
     /// Queue fly→ground→interact (or ground→interact) based on node flight settings and distance.
     /// Flight and gather fans come from route NodeLocation fan points, with standoff applied to gather fan.
     /// </summary>
@@ -69,8 +131,7 @@ internal static class GatherRouteNavigation
         var nodePos = node.Position;
         var flightFan = NavmeshMovement.ResolvePathPoint(
             NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position, nodePos));
-        var gatherFan = NavmeshMovement.ResolvePathPoint(
-            NavmeshMovement.ApplyNodeStandoff(GetGatherFanPoint(targetLocation, flightFan, nodePos), nodePos));
+        var gatherFan = ResolveGatherFanPoint(targetLocation, nodePos, flightFan);
 
         _gatherFanNodeId = node.BaseId;
         _gatherFanPoint = gatherFan;
@@ -160,5 +221,15 @@ internal static class GatherRouteNavigation
         }
 
         return NodeLocationExtensions.GetRandomGatherPosition(targetLocation, Player.Position, nodeWorldPos);
+    }
+
+    private static Vector3 ResolveGatherFanPoint(NodeLocation location, Vector3 nodeWorldPos, Vector3? flightFanPoint = null)
+    {
+        var rawFan = flightFanPoint is { } fan
+            ? GetGatherFanPoint(location, fan, nodeWorldPos)
+            : GetGatherFanPoint(location, Player.Position, nodeWorldPos);
+
+        return NavmeshMovement.ResolveGroundPathPoint(
+            NavmeshMovement.ApplyNodeStandoff(rawFan, nodeWorldPos));
     }
 }
