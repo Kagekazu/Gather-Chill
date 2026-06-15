@@ -227,7 +227,7 @@ namespace GatherChill.Scheduler.Tasks
             {
                 var msg = $"Stuck too many times ({context})";
                 NavmeshRuntime.SetFailure(msg);
-                StopOwned();
+                StopOwned(cancelPathfind: true);
                 if (EzThrottler.Throttle($"Navmesh stuck give up ({context})", 3000))
                     LogNav(msg, true);
 
@@ -248,7 +248,7 @@ namespace GatherChill.Scheduler.Tasks
 
             if (EzThrottler.Throttle("Stuck - stopping navmesh", 1000))
             {
-                StopOwned();
+                StopOwned(cancelPathfind: true);
                 BeginStuckTracking();
                 LogNav($"Stuck, restarting path ({context})", false);
             }
@@ -256,7 +256,13 @@ namespace GatherChill.Scheduler.Tasks
             return true;
         }
 
-        private static void StopOwned() => P.navmesh.StopIfOwned();
+        private static void StopOwned(bool cancelPathfind = false)
+        {
+            if (cancelPathfind)
+                P.navmesh.CancelOwnedMovement();
+            else
+                P.navmesh.StopIfOwned();
+        }
 
         private static void LogNav(string message, bool warning)
         {

@@ -92,7 +92,7 @@ namespace GatherChill.Ui.RouteWindowTabs
                     IEnumerable<KeyValuePair<uint, GatheringRoute>> sortedTable = CurrentSortMode switch
                     {
                         RouteSortMode.BestPath => SortByBestPath(filtered),
-                        _ => filtered.OrderBy(x => x.Value.TerritoryId).ThenBy(x => x.Key),
+                        _ => filtered.OrderBy(x => x.Key),
                     };
 
                     foreach (var route in sortedTable)

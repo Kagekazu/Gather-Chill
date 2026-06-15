@@ -125,10 +125,15 @@ public class NavmeshIPC
             _reloadRequestedForTerritory = false;
         }
 
-        if (_reloadRequestedForTerritory)
-            return;
-
         var now = DateTime.UtcNow;
+        if (_reloadRequestedForTerritory)
+        {
+            if ((now - _lastReloadAttempt).TotalSeconds < 10)
+                return;
+
+            _reloadRequestedForTerritory = false;
+        }
+
         if ((now - _lastReloadAttempt).TotalSeconds < 10)
             return;
 
@@ -194,10 +199,19 @@ public class NavmeshIPC
     }
 
     /// <summary>
-    /// Stop only when we started the path. Avoids cancelling unrelated vnavmesh usage
-    /// (manual /other plugins) and is safer than StopCompletely during gathering.
+    /// Stop only when we started the path. Uses Path.Stop so the zone mesh stays loaded.
     /// </summary>
     public void StopIfOwned()
+    {
+        if (!NavmeshRuntime.OwnsPath)
+            return;
+
+        StopPath();
+        NavmeshRuntime.SetOwnsPath(false);
+    }
+
+    /// <summary>Stop owned movement and cancel in-flight pathfind (stuck recovery only — can disturb vnavmesh).</summary>
+    public void CancelOwnedMovement()
     {
         if (!NavmeshRuntime.OwnsPath)
             return;
@@ -205,6 +219,19 @@ public class NavmeshIPC
         StopCompletely();
         NavmeshRuntime.SetOwnsPath(false);
     }
+
+    public void ResetReloadGate() => _reloadRequestedForTerritory = false;
+
+    /// <summary>Called when a gather window closes so travel can reload mesh if vnavmesh was left idle.</summary>
+    public void NotifyGatheringSessionEnded()
+    {
+        ResetReloadGate();
+
+        if (!IsGatheringSessionActive() && !IsReady() && !IsBuildInProgress())
+            TryEnsureNavMeshLoading();
+    }
+
+    private static bool IsGatheringSessionActive() => NavmeshMovement.IsGatheringSessionActive();
 
     public bool IsPathingOrFinding() => IsMoving();
 

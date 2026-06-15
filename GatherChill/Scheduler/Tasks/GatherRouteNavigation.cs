@@ -70,11 +70,21 @@ internal static class GatherRouteNavigation
     public static bool TryFlyToPoint(Vector3 point, float closeRange, bool stayMounted = false) =>
         Task_NavmeshMove.Task_FlyTo(NavmeshMovement.ResolvePathPoint(point), waitForBusy: true, closeRange, stayMounted) == true;
 
+    /// <summary>Fly in until within 75y of the route location so the client node list can update.</summary>
+    public static bool TryTravelWithinLoadRange(NodeLocation location)
+    {
+        if (NavmeshMovement.IsWithinLoadRangeOf(location.Position))
+            return true;
+
+        TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true);
+        return false;
+    }
+
     /// <summary>
-    /// Fly in when far away; once within node load range, keep flying until ~5y from the gather fan,
-    /// then dismount for a short ground walk so the node object can spawn. Returns true only when at the gather fan on foot.
+    /// Short final walk to the gather fan after node availability was confirmed within load range.
+    /// Returns true only when standing at the gather fan on foot.
     /// </summary>
-    public static bool TryApproachForNodeValidation(NodeLocation location)
+    public static bool TryApproachGatherFan(NodeLocation location)
     {
         var nodePos = location.Position;
 
@@ -86,15 +96,9 @@ internal static class GatherRouteNavigation
 
         var gatherFan = _validationGatherFan.Value;
 
-        if (Player.DistanceTo(nodePos) > NavmeshMovement.LoadRange)
-        {
-            TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true);
-            return false;
-        }
-
         if (NavmeshMovement.HorizontalDistance(gatherFan) > NavmeshMovement.GroundValidationWalkRange)
         {
-            if (location.AllowFlying && NavmeshMovement.CanUseFlyMovement())
+            if (location.AllowFlying && NavmeshMovement.CanUseFlyMovement() && NavmeshMovement.ShouldUseFlyPath(gatherFan))
             {
                 Task_NavmeshMove.Task_FlyTo(
                     NavmeshMovement.ResolvePathPoint(gatherFan),

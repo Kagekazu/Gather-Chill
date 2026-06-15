@@ -164,6 +164,8 @@ namespace GatherChill.Scheduler.Tasks
             if (!GatherRouteNavigation.IsCorrectTerritory(selectedRoute))
                 return SchedulerMain.QueueActive ? false : true;
 
+            AdvancePastUnavailableNodeGroups();
+
             if (RouteIndex >= GatherRoute.Count)
             {
                 if (SchedulerMain.QueueActive)
@@ -182,109 +184,82 @@ namespace GatherChill.Scheduler.Tasks
             var currentNode = GatherRoute[RouteIndex];
             TargetNodeId = currentNode.NodeId;
 
-            if (EzThrottler.Throttle("Travel Check throttle message"))
-                IceLogging.Verbose("Currently in travel check mode");
-
-            // Outside load range: fly toward the flight fan; within range: ground to gather fan before checking spawn.
-            if (!GatherRouteNavigation.TryApproachForNodeValidation(currentNode.Locations[0]))
+            if (currentNode.Locations.Count == 0)
             {
-                if (Player.DistanceTo(currentNode.Locations[0].Position) > NavmeshMovement.LoadRange
-                    && EzThrottler.Throttle("Throttle message"))
-                {
-                    IceLogging.Verbose($"Too far from node group. Distance: {Player.DistanceTo(currentNode.Locations[0].Position):N1}");
-                }
-
+                RouteIndex += 1;
+                NodeCheckIndex = 0;
                 return false;
             }
 
-            IceLogging.Debug("We're within range of all nodes, continuing on");
-            P.navmesh.StopIfOwned();
+            if (NodeCheckIndex >= currentNode.Locations.Count)
+            {
+                IceLogging.Debug($"Node {currentNode.NodeId} unavailable at all locations, moving to next group");
+                RouteIndex += 1;
+                NodeCheckIndex = 0;
+                GatherRouteNavigation.ResetValidationApproach();
+                return false;
+            }
 
-            var validNode = NavmeshMovement.GetNearestGatheringNode(TargetNodeId.Value);
+            var spawned = NavmeshMovement.FindSpawnedNodeInGroup(currentNode);
+            var approachLocation = spawned?.location ?? currentNode.Locations[NodeCheckIndex];
+            if (spawned != null)
+            {
+                var spawnedIndex = currentNode.Locations.IndexOf(spawned.Value.location);
+                if (spawnedIndex >= 0)
+                    NodeCheckIndex = spawnedIndex;
+            }
+
+            if (EzThrottler.Throttle("Travel Check throttle message"))
+                IceLogging.Verbose("Currently in travel check mode");
+
+            if (!GatherRouteNavigation.TryTravelWithinLoadRange(approachLocation))
+            {
+                if (EzThrottler.Throttle("Throttle message"))
+                    IceLogging.Verbose($"Traveling to node location. Distance: {Player.DistanceTo(approachLocation.Position):N1}");
+                return false;
+            }
+
+            var validNode = NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, approachLocation.Position);
 
             if (EzThrottler.Throttle("IsNodeValid"))
-            {
-                IceLogging.Debug($"Is Node Valid: {validNode != null}");
-            }
+                IceLogging.Debug($"Node available at location {NodeCheckIndex} (within {NavmeshMovement.LoadRange}y): {validNode != null}");
 
             if (validNode == null)
             {
-                GatherRouteNavigation.ResetValidationApproach();
-                NodeCheckIndex = 0;
-                P.taskManager.Enqueue(() => IndividualNodeCheck(), "Checking individual nodes");
-                return true;
-            }
-
-            GatherRouteNavigation.ResetValidationApproach();
-            IceLogging.Debug("we're within range, checking travel kind now");
-            P.taskManager.Enqueue(() => CheckTravelKind(validNode), "Checking Travel Kind");
-            return true;
-        }
-        private static bool IndividualNodeCheck()
-        {
-            if (GatherRouteNavigation.IsGatheringSessionActive())
-            {
-                GatherRouteNavigation.StopMovementForGathering();
-                return true;
-            }
-
-            var currentNode = GatherRoute[RouteIndex];
-            TargetNodeId = currentNode.NodeId;
-
-            // if we're doing this, that means that all nodes aren't within a close 75 yalms of each other. So going to check each individually
-            if (NodeCheckIndex < currentNode.Locations.Count)
-            {
-                IceLogging.Verbose($"Checking location: {NodeCheckIndex}");
-                var location = currentNode.Locations[NodeCheckIndex];
-                var distanceToLoc = Player.DistanceTo(location.Position);
-                if (EzThrottler.Throttle("Location message throttle"))
-                    IceLogging.Debug($"Distance to location: {distanceToLoc:N2}");
-
-                if (distanceToLoc > NavmeshMovement.LoadRange)
-                    GatherRouteNavigation.ResetValidationApproach();
-
-                if (!GatherRouteNavigation.TryApproachForNodeValidation(location))
-                {
-                    if (distanceToLoc > NavmeshMovement.LoadRange && EzThrottler.Throttle("Throttle message"))
-                        IceLogging.Verbose("Too far from node to check");
-
-                    return false;
-                }
-
-                P.navmesh.StopIfOwned();
-
-                var validNode = NavmeshMovement.GetNearestGatheringNode(TargetNodeId.Value);
-
-                if (validNode != null)
-                {
-                    GatherRouteNavigation.ResetValidationApproach();
-                    IceLogging.Debug("We've found a valid node! Time to pathfind/interact with it");
-                    NodeCheckIndex = 0; // Reset for next time
-                    P.taskManager.Enqueue(() => CheckTravelKind(validNode), "Checking Travel Kind");
-                    return true;
-                }
-
-                IceLogging.Debug($"No valid node at location {NodeCheckIndex}, moving to next location");
+                IceLogging.Debug($"Node not up at location {NodeCheckIndex}, trying next location");
                 GatherRouteNavigation.ResetValidationApproach();
                 NodeCheckIndex += 1;
                 return false;
             }
-            else
+
+            if (!GatherRouteNavigation.TryApproachGatherFan(approachLocation))
+                return false;
+
+            P.navmesh.StopIfOwned();
+
+            if (NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, approachLocation.Position) == null)
             {
-                // We've checked all locations and found no valid nodes
-                IceLogging.Debug("Checked all locations for this node group, moving to next route index");
-                TargetFanPoint = null;
+                IceLogging.Debug("Node despawned before approach finished, rescanning");
                 GatherRouteNavigation.ResetValidationApproach();
-                TargetNodeId = null;
+                NodeCheckIndex += 1;
+                return false;
+            }
+
+            GatherRouteNavigation.ResetValidationApproach();
+            NodeCheckIndex = 0;
+            IceLogging.Debug("Found available node, starting approach");
+            P.taskManager.Enqueue(() => CheckTravelKind(validNode), "Checking Travel Kind");
+            return true;
+        }
+
+        private static void AdvancePastUnavailableNodeGroups()
+        {
+            while (RouteIndex < GatherRoute.Count && NavmeshMovement.IsGroupConfirmedUnavailable(GatherRoute[RouteIndex]))
+            {
+                IceLogging.Debug($"Node group {GatherRoute[RouteIndex].NodeId} not available, skipping");
                 RouteIndex += 1;
                 NodeCheckIndex = 0;
-                if (EzThrottler.Throttle("Else statement"))
-                {
-                    IceLogging.Debug($"Gather route count: {GatherRoute.Count}");
-                    IceLogging.Debug("Moving to the next node");
-                    IceLogging.Debug($"Route Index: {RouteIndex}");
-                }
-                return true;
+                GatherRouteNavigation.ResetValidationApproach();
             }
         }
         private static bool CheckTravelKind(IGameObject node)
@@ -293,10 +268,17 @@ namespace GatherChill.Scheduler.Tasks
                 return true;
 
             var currentNode = GatherRoute[RouteIndex];
-            var targetLocation = currentNode.Locations.FirstOrDefault(x => x.Position == node.Position);
+            var targetLocation = NavmeshMovement.MatchRouteLocation(currentNode, node.Position);
             if (targetLocation == null)
             {
-                IceLogging.Error("We're getting an invalid node location");
+                IceLogging.Error("Spawned node does not match any route location for this group");
+                return true;
+            }
+
+            if (NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, targetLocation.Position) == null)
+            {
+                IceLogging.Debug("Node no longer available at matched location, rescanning");
+                GatherRouteNavigation.ResetValidationApproach();
                 return true;
             }
 

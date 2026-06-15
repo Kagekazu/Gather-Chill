@@ -20,7 +20,7 @@ namespace GatherChill.Utilities.Utility;
 internal static unsafe class NavmeshMovement
 {
     // Distance thresholds for the gather-route approach pipeline (see GatherRouteNavigation).
-    public const float LoadRange = 75f;              // Skip nav if already within node load range
+    public const float LoadRange = 75f;              // Client node list updates within this range
     public const float FanApproachCloseRange = 50f;  // Close enough to switch from fly fan to ground fan
     public const float FinalApproachCloseRange = 0.5f;
     public const float LongMoveMountDistance = 30f; // Ground moves beyond this auto-mount
@@ -33,6 +33,7 @@ internal static unsafe class NavmeshMovement
     public const float GatherFanCloseRange = FinalApproachCloseRange;
     public const float NodeValidationCloseRange = 2f;
     public const float GroundValidationWalkRange = 5f; // Fly until this close, then dismount for a short ground walk
+    public const float NodeLocationMatchDistance = 12f; // Route coords vs spawned gathering point
 
     /// <summary>Keep approach points off node centers embedded in walls/cliffs.</summary>
     public const float GatherNodeStandoff = 3f;
@@ -70,7 +71,11 @@ internal static unsafe class NavmeshMovement
             NavmeshRuntime.SetOwnsPath(false);
     }
 
-    public static void ResetGatheringNavHalt() => _haltedNavForGathering = false;
+    public static void ResetGatheringNavHalt()
+    {
+        _haltedNavForGathering = false;
+        P.navmesh.NotifyGatheringSessionEnded();
+    }
 
     public static bool IsWithinHorizontalRange(Vector3 destination, float range) =>
         P.navmesh.IsWithinHorizontalRange(destination, range);
@@ -111,6 +116,18 @@ internal static unsafe class NavmeshMovement
     public static bool IsNearGameObject(IGameObject gameObject, float distance) =>
         Player.DistanceTo(gameObject) <= distance;
 
+    public static bool IsWithinLoadRangeOf(Vector3 position) =>
+        Player.DistanceTo(position) <= LoadRange;
+
+    /// <summary>Within 75y the client populates gathering points; returns targetable node at this route spot if up.</summary>
+    public static IGameObject? GetAvailableNodeAtLocation(uint baseId, Vector3 routeLocation, float maxDistance = NodeLocationMatchDistance)
+    {
+        if (!IsWithinLoadRangeOf(routeLocation))
+            return null;
+
+        return GetGatheringNodeNearLocation(baseId, routeLocation, maxDistance);
+    }
+
     public static IGameObject? GetNearestGatheringNode(uint baseId) =>
         Svc.Objects
             .Where(obj => obj.BaseId == baseId)
@@ -118,6 +135,57 @@ internal static unsafe class NavmeshMovement
             .Where(obj => obj.ObjectKind == ObjectKind.GatheringPoint)
             .OrderBy(obj => Player.DistanceTo(obj))
             .FirstOrDefault();
+
+    public static bool LocationsRoughlyMatch(Vector3 routePosition, Vector3 worldPosition, float maxDistance = NodeLocationMatchDistance) =>
+        Vector3.Distance(routePosition, worldPosition) <= maxDistance;
+
+    public static IGameObject? GetGatheringNodeNearLocation(uint baseId, Vector3 routeLocation, float maxDistance = NodeLocationMatchDistance) =>
+        Svc.Objects
+            .Where(obj => obj.BaseId == baseId)
+            .Where(obj => obj.IsTargetable)
+            .Where(obj => obj.ObjectKind == ObjectKind.GatheringPoint)
+            .Where(obj => LocationsRoughlyMatch(routeLocation, obj.Position, maxDistance))
+            .OrderBy(obj => Vector3.Distance(routeLocation, obj.Position))
+            .FirstOrDefault();
+
+    /// <summary>First route location within load range where this node type is currently spawned.</summary>
+    public static (NodeLocation location, IGameObject node)? FindSpawnedNodeInGroup(GatheringNode group, float maxDistance = NodeLocationMatchDistance)
+    {
+        foreach (var location in group.Locations)
+        {
+            if (!IsWithinLoadRangeOf(location.Position))
+                continue;
+
+            var node = GetGatheringNodeNearLocation(group.NodeId, location.Position, maxDistance);
+            if (node != null)
+                return (location, node);
+        }
+
+        return null;
+    }
+
+    /// <summary>True when every location in the group is within load range and none has a spawned node.</summary>
+    public static bool IsGroupConfirmedUnavailable(GatheringNode group)
+    {
+        if (group.Locations.Count == 0)
+            return true;
+
+        if (!group.Locations.All(loc => Player.DistanceTo(loc.Position) <= LoadRange))
+            return false;
+
+        return FindSpawnedNodeInGroup(group) == null;
+    }
+
+    public static NodeLocation? MatchRouteLocation(GatheringNode group, Vector3 worldPosition, float maxDistance = NodeLocationMatchDistance)
+    {
+        foreach (var location in group.Locations)
+        {
+            if (LocationsRoughlyMatch(location.Position, worldPosition, maxDistance))
+                return location;
+        }
+
+        return null;
+    }
 
     public static bool IsNearGatheringNode(uint baseId, float distance)
     {
