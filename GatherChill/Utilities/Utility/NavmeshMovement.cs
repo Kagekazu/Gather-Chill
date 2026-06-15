@@ -8,6 +8,7 @@ using GatherChill.ConfigFiles;
 using GatherChill.GatheringInfo;
 using GatherChill.IPC;
 using Lumina.Excel.Sheets;
+using System.Collections.Generic;
 using static ECommons.UIHelpers.AddonMasterImplementations.AddonMaster;
 
 namespace GatherChill.Utilities.Utility;
@@ -26,14 +27,20 @@ internal static unsafe class NavmeshMovement
     public const float LongMoveMountDistance = 30f; // Ground moves beyond this auto-mount
     public const float PreferFlyDistance = 25f;       // Auto-fly when target is farther than this
     public const float NearbyObjectCullDistance = 30f;
-    public const float InteractRetrySlack = 0.5f;     // Extra tolerance when re-walking to gather fan after failed interact
+    public const float InteractRetrySlack = 0.25f;  // Small tolerance on the final step to the node
 
     public static float InteractDistance => C.NavmeshInteractDistance;
+
+    /// <summary>FFXIV gathering-node interact range (tighter than navmesh arrival).</summary>
+    public const float GatherInteractDistance = 3f;
 
     public const float GatherFanCloseRange = FinalApproachCloseRange;
     public const float NodeValidationCloseRange = 2f;
     public const float GroundValidationWalkRange = 5f; // Fly until this close, then dismount for a short ground walk
-    public const float NodeLocationMatchDistance = 12f; // Route coords vs spawned gathering point
+    /// <summary>Max horizontal drift allowed when snapping a gather point onto navmesh floor.</summary>
+    public const float GatherFanMaxNavDrift = 2f;
+    /// <summary>Max horizontal drift from route anchor to accept a spawned gathering object.</summary>
+    public const float SpawnMatchDistance = 5f;
 
     /// <summary>Keep approach points off node centers embedded in walls/cliffs.</summary>
     public const float GatherNodeStandoff = 3f;
@@ -75,6 +82,12 @@ internal static unsafe class NavmeshMovement
     {
         _haltedNavForGathering = false;
         P.navmesh.NotifyGatheringSessionEnded();
+    }
+
+    public static float HorizontalDistanceBetween(Vector3 a, Vector3 b)
+    {
+        var delta = a - b;
+        return MathF.Sqrt(delta.X * delta.X + delta.Z * delta.Z);
     }
 
     public static bool IsWithinHorizontalRange(Vector3 destination, float range) =>
@@ -123,7 +136,7 @@ internal static unsafe class NavmeshMovement
         IsWithinLoadRangeOf(node.Position);
 
     /// <summary>Within 75y the client populates gathering points; returns targetable node at this route spot if up.</summary>
-    public static IGameObject? GetAvailableNodeAtLocation(uint baseId, Vector3 routeLocation, float maxDistance = NodeLocationMatchDistance)
+    public static IGameObject? GetAvailableNodeAtLocation(uint baseId, Vector3 routeLocation, float maxDistance = SpawnMatchDistance)
     {
         var node = GetGatheringNodeNearLocation(baseId, routeLocation, maxDistance);
         if (node == null)
@@ -143,10 +156,28 @@ internal static unsafe class NavmeshMovement
             .OrderBy(obj => Player.DistanceTo(obj))
             .FirstOrDefault();
 
-    public static bool LocationsRoughlyMatch(Vector3 routePosition, Vector3 worldPosition, float maxDistance = NodeLocationMatchDistance) =>
-        Vector3.Distance(routePosition, worldPosition) <= maxDistance;
+    /// <summary>Best targetable node to interact with after walking the route gather fan.</summary>
+    public static IGameObject? ResolveInteractNode(uint baseId, Vector3 routeLocation, IGameObject? knownNode = null)
+    {
+        if (knownNode != null && knownNode.IsTargetable && knownNode.BaseId == baseId
+            && IsNearGameObject(knownNode, InteractDistance * 1.5f))
+            return knownNode;
 
-    public static IGameObject? GetGatheringNodeNearLocation(uint baseId, Vector3 routeLocation, float maxDistance = NodeLocationMatchDistance) =>
+        var atAnchor = GetGatheringNodeNearLocation(baseId, routeLocation);
+        if (atAnchor != null && IsNearGameObject(atAnchor, InteractDistance * 1.5f))
+            return atAnchor;
+
+        var nearest = GetNearestGatheringNode(baseId);
+        if (nearest != null && IsNearGameObject(nearest, InteractDistance * 2f))
+            return nearest;
+
+        return null;
+    }
+
+    public static bool LocationsRoughlyMatch(Vector3 routePosition, Vector3 worldPosition, float maxDistance = SpawnMatchDistance) =>
+        HorizontalDistanceBetween(routePosition, worldPosition) <= maxDistance;
+
+    public static IGameObject? GetGatheringNodeNearLocation(uint baseId, Vector3 routeLocation, float maxDistance = SpawnMatchDistance) =>
         Svc.Objects
             .Where(obj => obj.BaseId == baseId)
             .Where(obj => obj.IsTargetable)
@@ -155,11 +186,11 @@ internal static unsafe class NavmeshMovement
             .OrderBy(obj => Vector3.Distance(routeLocation, obj.Position))
             .FirstOrDefault();
 
-    /// <summary>First route location with a spawned node the client has loaded (route anchor or live node position).</summary>
-    public static (NodeLocation location, IGameObject node)? FindSpawnedNodeInGroup(GatheringNode group, float maxDistance = NodeLocationMatchDistance)
+    /// <summary>Route location whose anchor best matches a spawned node within <see cref="SpawnMatchDistance"/>.</summary>
+    public static (NodeLocation location, IGameObject node)? FindSpawnedNodeInGroup(GatheringNode group, float maxDistance = SpawnMatchDistance)
     {
         (NodeLocation location, IGameObject node)? best = null;
-        var bestDist = float.MaxValue;
+        var bestAnchorDist = float.MaxValue;
 
         foreach (var location in group.Locations)
         {
@@ -167,11 +198,35 @@ internal static unsafe class NavmeshMovement
             if (node == null || !IsNodeInClientRange(node))
                 continue;
 
-            var dist = Player.DistanceTo(node.Position);
+            var anchorDist = HorizontalDistanceBetween(location.Position, node.Position);
+            if (anchorDist < bestAnchorDist)
+            {
+                bestAnchorDist = anchorDist;
+                best = (location, node);
+            }
+        }
+
+        return best;
+    }
+
+    /// <summary>Spawned group whose node is closest to the player (any route group with an active spawn).</summary>
+    public static (int index, GatheringNode group, NodeLocation location, IGameObject node)? FindNearestSpawnedGroup(
+        IReadOnlyList<GatheringNode> groups)
+    {
+        (int index, GatheringNode group, NodeLocation location, IGameObject node)? best = null;
+        var bestDist = float.MaxValue;
+
+        for (var i = 0; i < groups.Count; i++)
+        {
+            var spawn = FindSpawnedNodeInGroup(groups[i]);
+            if (spawn == null)
+                continue;
+
+            var dist = Player.DistanceTo(spawn.Value.node.Position);
             if (dist < bestDist)
             {
                 bestDist = dist;
-                best = (location, node);
+                best = (i, groups[i], spawn.Value.location, spawn.Value.node);
             }
         }
 
@@ -190,7 +245,7 @@ internal static unsafe class NavmeshMovement
         return group.Locations.All(loc => Player.DistanceTo(loc.Position) <= LoadRange);
     }
 
-    public static NodeLocation? MatchRouteLocation(GatheringNode group, Vector3 worldPosition, float maxDistance = NodeLocationMatchDistance)
+    public static NodeLocation? MatchRouteLocation(GatheringNode group, Vector3 worldPosition, float maxDistance = SpawnMatchDistance)
     {
         foreach (var location in group.Locations)
         {
@@ -227,6 +282,52 @@ internal static unsafe class NavmeshMovement
         var standoff = nodePos + towardPlayer * minHorizontalDistance;
         standoff.Y = approachPoint.Y;
         return standoff;
+    }
+
+    public static bool IsWithinInteractRange(IGameObject node) =>
+        Player.DistanceTo(node) <= InteractDistance + InteractRetrySlack;
+
+    /// <summary>Close enough for the client to accept a gathering-node interact.</summary>
+    public static bool IsWithinGatherInteractRange(IGameObject node) =>
+        Player.DistanceTo(node) <= GatherInteractDistance + InteractRetrySlack;
+
+    /// <summary>Ground point to stand on when interacting — just inside game interact range on the approach side.</summary>
+    public static Vector3 GetInteractApproachPoint(IGameObject node)
+    {
+        var nodePos = node.Position;
+        var towardPlayer = Player.Position - nodePos;
+        towardPlayer.Y = 0;
+        if (towardPlayer.LengthSquared() < 0.01f)
+            towardPlayer = new Vector3(0, 0, 1f);
+
+        towardPlayer = Vector3.Normalize(towardPlayer);
+        var approachRadius = GatherInteractDistance - 0.5f;
+        var raw = nodePos + towardPlayer * approachRadius;
+        raw.Y = nodePos.Y;
+        return ResolveGatherApproachPoint(raw, nodePos);
+    }
+
+    /// <summary>
+    /// Snap onto walkable floor but reject snaps that slid the point far from where we asked
+    /// (e.g. onto a nearby path/ledge). Drift is measured from the requested point, not the node
+    /// anchor — approach/fan points are intentionally 2–3y off the node, so anchoring the check
+    /// there would reject every valid point and fall through to the standoff.
+    /// </summary>
+    public static Vector3 ResolveGatherApproachPoint(Vector3 position, Vector3 nodeAnchor)
+    {
+        if (!P.navmesh.Installed || !P.navmesh.IsReady())
+            return position;
+
+        var snapped = ResolveGroundPathPoint(position);
+        if (HorizontalDistanceBetween(snapped, position) <= GatherFanMaxNavDrift)
+            return snapped;
+
+        var indoor = IsIndoorTerritory(Player.Territory.RowId);
+        var underNode = P.navmesh.TryGetPointOnFloor(nodeAnchor, indoor, 1.5f);
+        if (underNode != null)
+            return ApplyNodeStandoff(underNode.Value, nodeAnchor, GatherNodeStandoff);
+
+        return ApplyNodeStandoff(position, nodeAnchor, GatherNodeStandoff);
     }
 
     /// <summary>Snap gather-fan coordinates onto walkable floor at the target XZ, not the player's altitude.</summary>

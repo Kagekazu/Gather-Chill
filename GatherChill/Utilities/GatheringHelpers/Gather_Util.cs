@@ -108,6 +108,9 @@ public static partial class Gather_Util
     public static bool RouteContainsItem(GatheringRoute route, uint itemId) =>
         GetItemIdsForRoute(route).Contains(itemId);
 
+    public static bool NodeYieldsItem(uint gatheringPointRowId, uint itemId) =>
+        GetItemIdsForGatheringNode(gatheringPointRowId).Contains(itemId);
+
     public static void UpdateSheetInfo()
     {
         var sheet_gatherPoint = ExcelHelper.Sheet_GatherPoint;

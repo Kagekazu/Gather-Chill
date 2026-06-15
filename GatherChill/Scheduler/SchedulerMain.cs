@@ -17,7 +17,10 @@ namespace GatherChill.Scheduler
         {
             GatherQueueSession.Stop();
             NavmeshEditorPath.Cancel();
-            P.navmesh.StopCompletely();
+            // StopPath (not StopCompletely): Path.Stop halts movement but keeps the zone mesh loaded.
+            // StopCompletely runs PathfindCancelAll, which resets vnavmesh to "Mesh 0%" and leaves the
+            // next queue start unable to pathfind.
+            P.navmesh.StopPath();
             Task_NavmeshMove.ReleaseOwnedPath();
             NavmeshRuntime.Reset();
             P.taskManager.Abort();

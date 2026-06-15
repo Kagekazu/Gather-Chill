@@ -70,52 +70,65 @@ internal static class GatherRouteNavigation
     public static bool TryFlyToPoint(Vector3 point, float closeRange, bool stayMounted = false) =>
         Task_NavmeshMove.Task_FlyTo(NavmeshMovement.ResolvePathPoint(point), waitForBusy: true, closeRange, stayMounted) == true;
 
-    /// <summary>Fly in until within 75y of the live node (when known) or route anchor so the client node list can update.</summary>
-    public static bool TryTravelWithinLoadRange(NodeLocation location, Vector3? nodeWorldPos = null)
+    /// <summary>Fly in until within 75y of the route anchor so the client node list can update.</summary>
+    public static bool TryTravelWithinLoadRange(NodeLocation location)
     {
-        var travelAnchor = nodeWorldPos ?? location.Position;
-
-        if (NavmeshMovement.IsWithinLoadRangeOf(travelAnchor))
+        if (NavmeshMovement.IsWithinLoadRangeOf(location.Position))
             return true;
 
-        TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true, nodeWorldPos);
+        TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true);
         return false;
     }
 
     /// <summary>
-    /// Short final walk to the gather fan after node availability was confirmed within load range.
-    /// Returns true only when standing at the gather fan on foot.
+    /// Walk until within interact range of the live gathering object (not a navmesh-snapped point on a nearby path).
     /// </summary>
-    public static bool TryApproachGatherFan(NodeLocation location, IGameObject node)
+    public static bool TryApproachGatherFan(NodeLocation location, IGameObject liveNode)
     {
-        var nodeWorldPos = node.Position;
+        var nodeCenter = liveNode.Position;
 
-        if (_validationGatherFan is null || _validationNodePos != nodeWorldPos)
+        if (_validationGatherFan is null || _validationNodePos != nodeCenter)
         {
-            _validationNodePos = nodeWorldPos;
-            _validationGatherFan = ResolveGatherFanPoint(location, nodeWorldPos);
+            _validationNodePos = nodeCenter;
+            _validationGatherFan = NavmeshMovement.GetInteractApproachPoint(liveNode);
         }
 
-        var gatherFan = _validationGatherFan.Value;
+        var approachPoint = _validationGatherFan.Value;
 
-        if (NavmeshMovement.HorizontalDistance(gatherFan) > NavmeshMovement.GroundValidationWalkRange)
+        if (NavmeshMovement.IsWithinGatherInteractRange(liveNode))
         {
-            if (location.AllowFlying && NavmeshMovement.CanUseFlyMovement() && NavmeshMovement.ShouldUseFlyPath(gatherFan))
+            // In interact range: drop the mount so targeting/gathering can fire.
+            if (Player.Mounted)
+            {
+                Utils.Dismount();
+                return false;
+            }
+
+            return true;
+        }
+
+        // Still travelling toward the node: stay mounted (or let MoveTo auto-mount). Dismounting here
+        // fights MoveTo's long-distance auto-mount and leaves us mounting/dismounting in place — which
+        // strands us when the next node is within load range but well outside the final-approach radius.
+        if (NavmeshMovement.HorizontalDistance(approachPoint) > NavmeshMovement.GroundValidationWalkRange)
+        {
+            if (location.AllowFlying && NavmeshMovement.CanUseFlyMovement() && NavmeshMovement.ShouldUseFlyPath(approachPoint))
             {
                 Task_NavmeshMove.Task_FlyTo(
-                    NavmeshMovement.ResolvePathPoint(gatherFan),
+                    NavmeshMovement.ResolvePathPoint(approachPoint),
                     waitForBusy: false,
                     NavmeshMovement.GroundValidationWalkRange,
                     stayMounted: true);
             }
             else
             {
-                Task_NavmeshMove.Task_GroundTo(gatherFan, waitForBusy: false, NavmeshMovement.GroundValidationWalkRange);
+                Task_NavmeshMove.Task_GroundTo(approachPoint, waitForBusy: false, NavmeshMovement.GroundValidationWalkRange);
             }
 
             return false;
         }
 
+        // Final approach: dismount and walk the last few yalms onto the gather fan.
         if (Player.Mounted)
         {
             Utils.Dismount();
@@ -123,9 +136,44 @@ internal static class GatherRouteNavigation
         }
 
         return Task_NavmeshMove.Task_GroundTo(
-            gatherFan,
+            approachPoint,
             waitForBusy: false,
-            NavmeshMovement.NodeValidationCloseRange) == true;
+            NavmeshMovement.FinalApproachCloseRange) == true
+            && NavmeshMovement.IsWithinGatherInteractRange(liveNode);
+    }
+
+    /// <summary>Final ground walk until the live node is within game interact range.</summary>
+    public static bool WalkToInteractNode(IGameObject node)
+    {
+        if (Player.Mounted)
+        {
+            Utils.Dismount();
+            return false;
+        }
+
+        if (NavmeshMovement.IsWithinGatherInteractRange(node))
+            return true;
+
+        var approachPoint = NavmeshMovement.GetInteractApproachPoint(node);
+        _gatherFanNodeId = node.BaseId;
+        _gatherFanPoint = approachPoint;
+
+        var arrived = Task_NavmeshMove.Task_GroundTo(
+            approachPoint,
+            waitForBusy: true,
+            NavmeshMovement.FinalApproachCloseRange) == true;
+
+        if (!arrived)
+            return false;
+
+        if (NavmeshMovement.IsWithinGatherInteractRange(node))
+            return true;
+
+        if (EzThrottler.Throttle($"Short of interact range {node.BaseId}", 2000))
+            IceLogging.Debug(
+                $"Reached approach point but still {Player.DistanceTo(node):N2}y from node {node.BaseId} (need {NavmeshMovement.GatherInteractDistance}y)");
+
+        return false;
     }
 
     /// <summary>
@@ -134,30 +182,30 @@ internal static class GatherRouteNavigation
     /// </summary>
     public static void EnqueueApproach(IGameObject node, GatheringNode group, NodeLocation targetLocation)
     {
-        var nodePos = node.Position;
+        var nodeCenter = node.Position;
         var flightFan = NavmeshMovement.ResolvePathPoint(
-            NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position, nodePos));
-        var gatherFan = ResolveGatherFanPoint(targetLocation, nodePos, flightFan);
+            NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position, nodeCenter));
+        var interactPoint = NavmeshMovement.GetInteractApproachPoint(node);
 
         _gatherFanNodeId = node.BaseId;
-        _gatherFanPoint = gatherFan;
+        _gatherFanPoint = interactPoint;
 
-        if (NavmeshMovement.ShouldUseFlyApproachForNode(targetLocation, node.Position))
+        if (NavmeshMovement.ShouldUseFlyApproachForNode(targetLocation, interactPoint))
         {
-            IceLogging.Debug("Approach: fly then ground to gather fan");
+            IceLogging.Debug($"Approach: fly then walk to node {node.BaseId} (interact range)");
             P.taskManager.EnqueueMulti
             (
                 new(() => Task_NavmeshMove.Task_FlyTo(flightFan, true, NavmeshMovement.FinalApproachCloseRange, true), "Fly to fan", TaskConfig),
-                new(() => Task_NavmeshMove.Task_GroundTo(gatherFan, true, NavmeshMovement.GatherFanCloseRange), "Ground to gather fan", TaskConfig),
+                new(() => WalkToInteractNode(node), "Walk to node", TaskConfig),
                 new(() => Task_GatherRoute.InteractWithNode(node.BaseId), "Interact with node", TaskConfig)
             );
         }
         else
         {
-            IceLogging.Debug("Approach: ground to gather fan");
+            IceLogging.Debug($"Approach: ground walk to node {node.BaseId} (interact range)");
             P.taskManager.EnqueueMulti
             (
-                new(() => Task_NavmeshMove.Task_GroundTo(gatherFan, true, NavmeshMovement.GatherFanCloseRange), "Ground to gather fan", TaskConfig),
+                new(() => WalkToInteractNode(node), "Walk to node", TaskConfig),
                 new(() => Task_GatherRoute.InteractWithNode(node.BaseId), "Interact with node", TaskConfig)
             );
         }
@@ -189,7 +237,8 @@ internal static class GatherRouteNavigation
             return false;
         }
 
-        if (_gatherFanPoint is { } fan && _gatherFanNodeId == nodeId && !IsAtGatherFan(fan))
+        if (_gatherFanPoint is { } approachPt && _gatherFanNodeId == nodeId
+            && targetNode != null && !NavmeshMovement.IsWithinGatherInteractRange(targetNode))
         {
             if (Player.Mounted)
             {
@@ -197,14 +246,18 @@ internal static class GatherRouteNavigation
                 return false;
             }
 
-            if (P.navmesh.TryMoveTo(fan, fly: false, NavmeshMovement.GatherFanCloseRange))
+            var liveApproach = NavmeshMovement.GetInteractApproachPoint(targetNode);
+            _gatherFanPoint = liveApproach;
+            if (P.navmesh.TryMoveTo(liveApproach, fly: false, NavmeshMovement.FinalApproachCloseRange))
                 return false;
         }
 
         if (Player.Mounted)
             Utils.Dismount();
 
-        if (!Player.Mounted && !Player.IsJumping && EzThrottler.Throttle("Target + Interaction throttle"))
+        if (!Player.Mounted && !Player.IsJumping && targetNode != null
+            && NavmeshMovement.IsWithinGatherInteractRange(targetNode)
+            && EzThrottler.Throttle("Target + Interaction throttle"))
         {
             Utils.TargetgameObject(targetNode);
             Utils.InteractWithObject(targetNode);
@@ -217,25 +270,21 @@ internal static class GatherRouteNavigation
         Player.DistanceTo(fan) <= NavmeshMovement.GatherFanCloseRange + NavmeshMovement.InteractRetrySlack;
 
     /// <summary>Prefer explicit walk spots from the route editor; otherwise random gather fan around the node.</summary>
-    private static Vector3 GetGatherFanPoint(NodeLocation targetLocation, Vector3 flightFanPoint, Vector3 nodeWorldPos)
+    private static Vector3 GetGatherFanPoint(NodeLocation targetLocation, Vector3 flightFanPoint, Vector3 nodeCenter)
     {
         if (targetLocation.UseSpecificWalkingSpots && targetLocation.WalkablePositions.Count > 0)
-        {
-            var offset = nodeWorldPos - targetLocation.Position;
-            var shifted = targetLocation.WalkablePositions.Select(pos => pos + offset).ToList();
-            return NodeLocationExtensions.GetNearestWalkablePosition(shifted, Player.Position);
-        }
+            return NodeLocationExtensions.GetNearestWalkablePosition(targetLocation.WalkablePositions, Player.Position);
 
-        return NodeLocationExtensions.GetRandomGatherPosition(targetLocation, Player.Position, nodeWorldPos);
+        return NodeLocationExtensions.GetRandomGatherPosition(targetLocation, Player.Position, nodeCenter);
     }
 
-    private static Vector3 ResolveGatherFanPoint(NodeLocation location, Vector3 nodeWorldPos, Vector3? flightFanPoint = null)
+    private static Vector3 ResolveGatherFanPoint(NodeLocation location, Vector3 nodeCenter, Vector3? flightFanPoint = null)
     {
         var rawFan = flightFanPoint is { } fan
-            ? GetGatherFanPoint(location, fan, nodeWorldPos)
-            : GetGatherFanPoint(location, Player.Position, nodeWorldPos);
+            ? GetGatherFanPoint(location, fan, nodeCenter)
+            : GetGatherFanPoint(location, Player.Position, nodeCenter);
 
-        return NavmeshMovement.ResolveGroundPathPoint(
-            NavmeshMovement.ApplyNodeStandoff(rawFan, nodeWorldPos));
+        return NavmeshMovement.ResolveGatherApproachPoint(
+            NavmeshMovement.ApplyNodeStandoff(rawFan, nodeCenter), nodeCenter);
     }
 }
