@@ -29,6 +29,7 @@ namespace GatherChill.Ui
 
         public tabSelector PreviousTab = tabSelector.RouteSelector;
         public tabSelector CurrentTab = tabSelector.RouteSelector;
+        public bool FocusGatherListTab;
 
         public override void Draw()
         {
@@ -53,8 +54,10 @@ namespace GatherChill.Ui
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Gather List"))
+                var gatherListTabFlags = FocusGatherListTab ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None;
+                if (ImGui.BeginTabItem("Gather List", gatherListTabFlags))
                 {
+                    FocusGatherListTab = false;
                     Route_GatherList.Draw();
                     ImGui.EndTabItem();
                 }

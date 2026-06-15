@@ -26,13 +26,28 @@ internal static class GatherQueueSession
         PendingTargets.Add(target);
     }
 
-    public static void AddRouteItems(uint routeId)
+    public static int AddRouteItems(uint routeId, int defaultQuantity = 1)
     {
         if (!Gather_Util.SheetInfo.TryGetValue(routeId, out var sheet))
-            return;
+        {
+            IceLogging.Warning($"List+: no gather sheet data for route {routeId}.");
+            return 0;
+        }
 
+        var added = 0;
         foreach (var itemId in sheet.ItemIds)
-            AddTarget(new GatherTarget(routeId, itemId, 0));
+        {
+            if (PendingTargets.Any(t => t.RouteId == routeId && t.ItemId == itemId))
+                continue;
+
+            AddTarget(new GatherTarget(routeId, itemId, defaultQuantity));
+            added++;
+        }
+
+        if (added > 0)
+            IceLogging.Info($"List+: added {added} item(s) from route {routeId}.");
+
+        return added;
     }
 
     public static void AddCurrentZoneFromRoutes(IEnumerable<uint> routeIds)

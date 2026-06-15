@@ -76,11 +76,12 @@ namespace GatherChill.Ui.RouteWindowTabs
             {
                 if (ImGui.BeginTable("Route Selector Table", 5, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.SizingFixedFit))
                 {
-                    ImGui.TableSetupColumn("Route ID");
-                    ImGui.TableSetupColumn("Class");
+                    ImGui.TableSetupColumn("Route ID", ImGuiTableColumnFlags.WidthFixed, 108f);
+                    ImGui.TableSetupColumn("Class", ImGuiTableColumnFlags.WidthFixed, 32f);
                     ImGui.TableSetupColumn("Location");
                     ImGui.TableSetupColumn("Items");
                     ImGui.TableSetupColumn("Time Slots");
+                    ImGui.TableHeadersRow();
 
                     // Filtering out the pre-requisites of filtering first (Expansion + ZoneID if need be)
                     var filtered = P.routeEditor.Routes
@@ -110,51 +111,48 @@ namespace GatherChill.Ui.RouteWindowTabs
                             ImGui.TableSetColumnIndex(0);
 
                             if (ImGui.Button($"{route.Key}"))
-                            {
                                 Route_Editor.UpdateRoute(route.Key);
-                            }
                             if (ImGui.IsItemHovered())
                                 ImGui.SetTooltip("Open route in editor");
                             ImGui.SameLine();
-                            if (ImGui.SmallButton("List+"))
+                            if (ImGui.SmallButton("List+##add"))
                             {
-                                GatherQueueSession.AddRouteItems(route.Key);
+                                if (GatherQueueSession.AddRouteItems(route.Key) > 0)
+                                    P.routeWindow.FocusGatherListTab = true;
                             }
                             if (ImGui.IsItemHovered())
-                                ImGui.SetTooltip("Add all items from this route to the Gather List");
+                                ImGui.SetTooltip("Add all items from this route to the Gather List (Want = 1)");
 
-                            ImGui.TableNextColumn();
+                            ImGui.TableSetColumnIndex(1);
                             var job = route.Value.GatheringJobId;
                             if (Gather_Util.JobIcons.TryGetValue(job, out var jobIcon))
-                            {
                                 ImGui.Image(jobIcon.GetWrapOrEmpty().Handle, new(24, 24));
-                            }
 
-                            ImGui.TableNextColumn();
+                            ImGui.TableSetColumnIndex(2);
                             ImGui.Text($"{route.Value.ZoneName}");
                             if (ImGui.IsItemHovered())
-                            {
                                 ImGui.SetTooltip($"ID: {route.Value.TerritoryId}");
-                            }
-                            if (SheetInfo.TryGetValue(route.Key, out var gatherPointInfo))
+
+                            SheetInfo.TryGetValue(route.Key, out var gatherPointInfo);
+
+                            if (gatherPointInfo != null)
                             {
                                 ImGui.SameLine();
                                 if (ImGuiEx.IconButton(FontAwesomeIcon.Flag, $"{route.Key}_Map"))
-                                {
                                     gatherPointInfo.Map.OpenMap($"Route {route.Key}");
-                                }
                                 if (ImGui.IsItemHovered())
                                 {
                                     if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
-                                    {
                                         Svc.Commands.ProcessCommand("/vnav flyflag");
-                                    }
 
                                     ImGui.SetTooltip("Left click to set flag\n" +
                                         "Right click to fly to flag");
                                 }
+                            }
 
-                                ImGui.TableNextColumn();
+                            ImGui.TableSetColumnIndex(3);
+                            if (gatherPointInfo != null)
+                            {
                                 foreach (var item in gatherPointInfo.ItemIds)
                                 {
                                     if (Svc.Data.GetExcelSheet<Item>().TryGetRow(item, out var itemInfo))
@@ -163,25 +161,21 @@ namespace GatherChill.Ui.RouteWindowTabs
                                         var icon = Svc.Texture.GetFromGameIcon(iconId).GetWrapOrEmpty();
                                         ImGui.Image(icon.Handle, new(24, 24));
                                         if (ImGui.IsItemHovered())
-                                        {
                                             ImGui.SetTooltip($"{itemInfo.Name}");
-                                        }
                                         if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
-                                        {
                                             ImGui.SetClipboardText($"{itemInfo.Name}");
-                                        }
                                         ImGui.SameLine();
                                     }
                                 }
+                            }
 
-                                ImGui.TableNextColumn();
-                                if (gatherPointInfo.TimedInfo.Count > 0)
+                            ImGui.TableSetColumnIndex(4);
+                            if (gatherPointInfo?.TimedInfo.Count > 0)
+                            {
+                                foreach (var time in gatherPointInfo.TimedInfo)
                                 {
-                                    foreach (var time in gatherPointInfo.TimedInfo)
-                                    {
-                                        ImGui.Text($"{time.StartFormatted} - {time.EndFormatted}");
-                                        ImGui.SameLine();
-                                    }
+                                    ImGui.Text($"{time.StartFormatted} - {time.EndFormatted}");
+                                    ImGui.SameLine();
                                 }
                             }
 
