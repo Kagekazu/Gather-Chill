@@ -210,16 +210,6 @@ public class NavmeshIPC
         NavmeshRuntime.SetOwnsPath(false);
     }
 
-    /// <summary>Stop owned movement and cancel in-flight pathfind (stuck recovery only — can disturb vnavmesh).</summary>
-    public void CancelOwnedMovement()
-    {
-        if (!NavmeshRuntime.OwnsPath)
-            return;
-
-        StopCompletely();
-        NavmeshRuntime.SetOwnsPath(false);
-    }
-
     public void ResetReloadGate() => _reloadRequestedForTerritory = false;
 
     /// <summary>Called when a gather window closes so travel can reload mesh if vnavmesh was left idle.</summary>
@@ -232,8 +222,6 @@ public class NavmeshIPC
     }
 
     private static bool IsGatheringSessionActive() => NavmeshMovement.IsGatheringSessionActive();
-
-    public bool IsPathingOrFinding() => IsMoving();
 
     public void SmartPath(uint territory, Vector3? position = null)
     {

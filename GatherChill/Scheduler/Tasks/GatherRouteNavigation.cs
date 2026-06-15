@@ -64,12 +64,6 @@ internal static class GatherRouteNavigation
         return Task_NavmeshMove.Task_GroundTo(fanPoint, waitForBusy: false, closeRange, stayMounted) == true;
     }
 
-    public static bool TryGroundToPoint(Vector3 point, float closeRange = NavmeshMovement.FinalApproachCloseRange) =>
-        Task_NavmeshMove.Task_GroundTo(NavmeshMovement.ResolvePathPoint(point), waitForBusy: true, closeRange) == true;
-
-    public static bool TryFlyToPoint(Vector3 point, float closeRange, bool stayMounted = false) =>
-        Task_NavmeshMove.Task_FlyTo(NavmeshMovement.ResolvePathPoint(point), waitForBusy: true, closeRange, stayMounted) == true;
-
     /// <summary>Fly in until within 75y of the route anchor so the client node list can update.</summary>
     public static bool TryTravelWithinLoadRange(NodeLocation location)
     {
@@ -264,27 +258,5 @@ internal static class GatherRouteNavigation
         }
 
         return false;
-    }
-
-    private static bool IsAtGatherFan(Vector3 fan) =>
-        Player.DistanceTo(fan) <= NavmeshMovement.GatherFanCloseRange + NavmeshMovement.InteractRetrySlack;
-
-    /// <summary>Prefer explicit walk spots from the route editor; otherwise random gather fan around the node.</summary>
-    private static Vector3 GetGatherFanPoint(NodeLocation targetLocation, Vector3 flightFanPoint, Vector3 nodeCenter)
-    {
-        if (targetLocation.UseSpecificWalkingSpots && targetLocation.WalkablePositions.Count > 0)
-            return NodeLocationExtensions.GetNearestWalkablePosition(targetLocation.WalkablePositions, Player.Position);
-
-        return NodeLocationExtensions.GetRandomGatherPosition(targetLocation, Player.Position, nodeCenter);
-    }
-
-    private static Vector3 ResolveGatherFanPoint(NodeLocation location, Vector3 nodeCenter, Vector3? flightFanPoint = null)
-    {
-        var rawFan = flightFanPoint is { } fan
-            ? GetGatherFanPoint(location, fan, nodeCenter)
-            : GetGatherFanPoint(location, Player.Position, nodeCenter);
-
-        return NavmeshMovement.ResolveGatherApproachPoint(
-            NavmeshMovement.ApplyNodeStandoff(rawFan, nodeCenter), nodeCenter);
     }
 }

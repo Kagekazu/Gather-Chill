@@ -34,8 +34,6 @@ internal static unsafe class NavmeshMovement
     /// <summary>FFXIV gathering-node interact range (tighter than navmesh arrival).</summary>
     public const float GatherInteractDistance = 3f;
 
-    public const float GatherFanCloseRange = FinalApproachCloseRange;
-    public const float NodeValidationCloseRange = 2f;
     public const float GroundValidationWalkRange = 5f; // Fly until this close, then dismount for a short ground walk
     /// <summary>Max horizontal drift allowed when snapping a gather point onto navmesh floor.</summary>
     public const float GatherFanMaxNavDrift = 2f;
@@ -245,23 +243,6 @@ internal static unsafe class NavmeshMovement
         return group.Locations.All(loc => Player.DistanceTo(loc.Position) <= LoadRange);
     }
 
-    public static NodeLocation? MatchRouteLocation(GatheringNode group, Vector3 worldPosition, float maxDistance = SpawnMatchDistance)
-    {
-        foreach (var location in group.Locations)
-        {
-            if (LocationsRoughlyMatch(location.Position, worldPosition, maxDistance))
-                return location;
-        }
-
-        return null;
-    }
-
-    public static bool IsNearGatheringNode(uint baseId, float distance)
-    {
-        var node = GetNearestGatheringNode(baseId);
-        return node != null && IsNearGameObject(node, distance);
-    }
-
     /// <summary>
     /// Route fan points can land on the node center; many nodes sit in cliffs/walls.
     /// Only pushes when the point sits on the node center — configured gather fans (1–2y out) are kept as-is.
@@ -283,9 +264,6 @@ internal static unsafe class NavmeshMovement
         standoff.Y = approachPoint.Y;
         return standoff;
     }
-
-    public static bool IsWithinInteractRange(IGameObject node) =>
-        Player.DistanceTo(node) <= InteractDistance + InteractRetrySlack;
 
     /// <summary>Close enough for the client to accept a gathering-node interact.</summary>
     public static bool IsWithinGatherInteractRange(IGameObject node) =>

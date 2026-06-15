@@ -29,7 +29,6 @@ namespace GatherChill.Scheduler.Tasks
         private static bool pendingRouteChange;
         private static int RouteIndex = 0;
         private static List<GatheringNode> GatherRoute = new();
-        private static Vector3? TargetFanPoint = null;
         private static uint? TargetNodeId = null;
         private static int NodeCheckIndex = 0;
         private static bool _openedGatheringWindowThisNode;
@@ -42,7 +41,6 @@ namespace GatherChill.Scheduler.Tasks
             pendingRouteChange = false;
             RouteIndex = 0;
             GatherRoute.Clear();
-            TargetFanPoint = null;
             TargetNodeId = null;
             NodeCheckIndex = 0;
             _openedGatheringWindowThisNode = false;
@@ -67,7 +65,6 @@ namespace GatherChill.Scheduler.Tasks
         {
             RouteIndex = 0;
             NodeCheckIndex = 0;
-            TargetFanPoint = null;
             TargetNodeId = null;
             _openedGatheringWindowThisNode = false;
             GatherRouteNavigation.ResetValidationApproach();
@@ -134,7 +131,6 @@ namespace GatherChill.Scheduler.Tasks
             loadedItemId = SchedulerMain.ItemId;
             RouteIndex = 0;
             NodeCheckIndex = 0;
-            TargetFanPoint = null;
             TargetNodeId = null;
             _openedGatheringWindowThisNode = false;
             GatherRoute.Clear();
@@ -366,7 +362,6 @@ namespace GatherChill.Scheduler.Tasks
                 return true;
             }
 
-            TargetFanPoint = NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position, targetLocation.Position);
             GatherRouteNavigation.ResetInteractRetries();
             GatherRouteNavigation.EnqueueApproach(liveNode, currentNode, targetLocation);
             return true;
