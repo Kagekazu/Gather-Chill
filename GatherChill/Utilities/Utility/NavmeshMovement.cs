@@ -118,11 +118,17 @@ internal static unsafe class NavmeshMovement
     public static bool WantsFlyPath(bool requestFly, Vector3 target) =>
         requestFly ? CanUseFlyMovement() : ShouldUseFlyPath(target);
 
-    public static bool ShouldUseFlyPathForNode(NodeLocation node, Vector3 target) =>
-        node.AllowFlying && ShouldUseFlyPath(target);
+    /// <summary>Vertical gap above the player past which we ascend by flying instead of walking up.</summary>
+    public const float FlyUpHeightThreshold = 2f;
 
-    public static bool ShouldUseFlyApproachForNode(NodeLocation node, Vector3 target) =>
-        node.AllowFlying && ShouldUseFlyPath(target) && !Svc.Condition[ConditionFlag.Diving];
+    /// <summary>
+    /// Fly to the gather stand point when it is far OR meaningfully above us. The height term is what
+    /// rescues ledge nodes ("GBR's problem"): the author's gather fan sits up on the ledge, so we fly up
+    /// onto it instead of ground-walking into the cliff below.
+    /// </summary>
+    public static bool ShouldFlyToGatherStand(NodeLocation node, Vector3 standPoint) =>
+        node.AllowFlying && CanUseFlyMovement() && !Svc.Condition[ConditionFlag.Diving]
+        && (Player.DistanceTo(standPoint) > PreferFlyDistance || standPoint.Y - Player.Position.Y > FlyUpHeightThreshold);
 
     public static bool IsNearGameObject(IGameObject gameObject, float distance) =>
         Player.DistanceTo(gameObject) <= distance;
