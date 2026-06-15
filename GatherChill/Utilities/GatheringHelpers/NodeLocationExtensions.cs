@@ -203,7 +203,7 @@ namespace GatherChill.Utilities.GatheringHelpers
             );
         }
 
-        private static Vector3 GetNearestWalkablePosition(List<Vector3> walkablePositions, Vector3 playerPosition)
+        public static Vector3 GetNearestWalkablePosition(List<Vector3> walkablePositions, Vector3 playerPosition)
         {
             Vector3 nearest = walkablePositions[0];
             float minDistSq = Vector3.DistanceSquared(nearest, playerPosition);

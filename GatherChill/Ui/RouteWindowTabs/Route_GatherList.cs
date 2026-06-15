@@ -54,11 +54,13 @@ internal static class Route_GatherList
                 GatherQueueSession.Start();
         }
 
-        DrawTargetTable(GatherQueueSession.PendingTargets, C.SkipInactiveTimedNodes);
-
-        if (GatherQueueSession.PendingTargets.Count > 0 &&
+        if (GatherQueueSession.LastStartError is { } startError)
+            ImGui.TextColored(new Vector4(1f, 0.45f, 0.45f, 1f), startError);
+        else if (GatherQueueSession.PendingTargets.Count > 0 &&
             GatherQueuePlanner.Plan(GatherQueueSession.PendingTargets, C.SkipInactiveTimedNodes).Count == 0)
             ImGui.TextDisabled("No queued entries (set Want > 0, routes need node data, or timed rows are inactive).");
+
+        DrawTargetTable(GatherQueueSession.PendingTargets, C.SkipInactiveTimedNodes);
     }
 
     private static void DrawTargetTable(List<GatherTarget> targets, bool skipInactiveTimed)
@@ -185,11 +187,11 @@ internal static class Route_GatherList
         if (target.TargetQuantity <= 0)
             return (false, true);
 
+        if (!Gather_Util.RouteContainsItem(route, target.ItemId))
+            return (false, true);
+
         if (SheetInfo.TryGetValue(target.RouteId, out var sheet))
         {
-            if (!sheet.ItemIds.Contains(target.ItemId))
-                return (false, true);
-
             if (skipInactiveTimed && GetTimedPriority(sheet) == TimedPriority.TimedInactive)
                 return (false, true);
         }

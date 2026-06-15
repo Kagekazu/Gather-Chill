@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ECommons.GameHelpers;
 using GatherChill.ConfigFiles;
+using GatherChill.GatheringInfo;
+using GatherChill.Scheduler.Tasks;
 using GatherChill.Utilities.GatheringHelpers;
 using GatherChill.Utilities.Tools;
 using GatherChill.Utilities.Utility;
@@ -15,8 +17,13 @@ internal static class GatherQueueSession
     internal static int BatchIndex { get; private set; }
     internal static int TargetIndex { get; private set; }
     internal static bool Active { get; private set; }
+    public static string? LastStartError { get; private set; }
 
-    public static void ClearPending() => PendingTargets.Clear();
+    public static void ClearPending()
+    {
+        PendingTargets.Clear();
+        LastStartError = null;
+    }
 
     public static void AddTarget(GatherTarget target)
     {
@@ -89,10 +96,12 @@ internal static class GatherQueueSession
 
     public static bool Start()
     {
+        LastStartError = null;
         Batches = GatherQueuePlanner.Plan(PendingTargets, C.SkipInactiveTimedNodes);
         if (Batches.Count == 0 || Batches.All(b => b.Targets.Count == 0))
         {
-            IceLogging.Warning("Gather list is empty or has no valid routes with node data.");
+            LastStartError = GatherQueuePlanner.DescribePlanFailure(PendingTargets, C.SkipInactiveTimedNodes);
+            IceLogging.Warning(LastStartError);
             return false;
         }
 
@@ -104,6 +113,8 @@ internal static class GatherQueueSession
         BatchIndex = 0;
         TargetIndex = 0;
         Active = true;
+        P.taskManager.Abort();
+        Task_GatherRoute.Reset();
         SnapshotBaselines();
         ApplyCurrentTarget();
         IceLogging.Info($"Started gather queue: {Batches.Count} zone(s), {activeCount} target(s).");

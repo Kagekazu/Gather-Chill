@@ -53,10 +53,10 @@ internal static class GatherRouteNavigation
         return false;
     }
 
-    public static bool TryFlyToLocation(NodeLocation location, float closeRange, bool stayMounted)
+    public static bool TryFlyToLocation(NodeLocation location, float closeRange, bool stayMounted, Vector3? nodeWorldPos = null)
     {
         var fanPoint = NavmeshMovement.ResolvePathPoint(
-            NodeLocationExtensions.GetRandomFlightPosition(location, Player.Position));
+            NodeLocationExtensions.GetRandomFlightPosition(location, Player.Position, nodeWorldPos));
 
         if (location.AllowFlying && NavmeshMovement.CanUseFlyMovement())
             return Task_NavmeshMove.Task_FlyTo(fanPoint, waitForBusy: false, closeRange, stayMounted) == true;
@@ -70,13 +70,15 @@ internal static class GatherRouteNavigation
     public static bool TryFlyToPoint(Vector3 point, float closeRange, bool stayMounted = false) =>
         Task_NavmeshMove.Task_FlyTo(NavmeshMovement.ResolvePathPoint(point), waitForBusy: true, closeRange, stayMounted) == true;
 
-    /// <summary>Fly in until within 75y of the route location so the client node list can update.</summary>
-    public static bool TryTravelWithinLoadRange(NodeLocation location)
+    /// <summary>Fly in until within 75y of the live node (when known) or route anchor so the client node list can update.</summary>
+    public static bool TryTravelWithinLoadRange(NodeLocation location, Vector3? nodeWorldPos = null)
     {
-        if (NavmeshMovement.IsWithinLoadRangeOf(location.Position))
+        var travelAnchor = nodeWorldPos ?? location.Position;
+
+        if (NavmeshMovement.IsWithinLoadRangeOf(travelAnchor))
             return true;
 
-        TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true);
+        TryFlyToLocation(location, NavmeshMovement.FanApproachCloseRange, stayMounted: true, nodeWorldPos);
         return false;
     }
 
@@ -84,8 +86,10 @@ internal static class GatherRouteNavigation
     /// Short final walk to the gather fan after node availability was confirmed within load range.
     /// Returns true only when standing at the gather fan on foot.
     /// </summary>
-    public static bool TryApproachGatherFan(NodeLocation location, Vector3 nodeWorldPos)
+    public static bool TryApproachGatherFan(NodeLocation location, IGameObject node)
     {
+        var nodeWorldPos = node.Position;
+
         if (_validationGatherFan is null || _validationNodePos != nodeWorldPos)
         {
             _validationNodePos = nodeWorldPos;
@@ -217,9 +221,9 @@ internal static class GatherRouteNavigation
     {
         if (targetLocation.UseSpecificWalkingSpots && targetLocation.WalkablePositions.Count > 0)
         {
-            return targetLocation.WalkablePositions
-                .OrderBy(x => Vector3.Distance(flightFanPoint, x))
-                .First();
+            var offset = nodeWorldPos - targetLocation.Position;
+            var shifted = targetLocation.WalkablePositions.Select(pos => pos + offset).ToList();
+            return NodeLocationExtensions.GetNearestWalkablePosition(shifted, Player.Position);
         }
 
         return NodeLocationExtensions.GetRandomGatherPosition(targetLocation, Player.Position, nodeWorldPos);

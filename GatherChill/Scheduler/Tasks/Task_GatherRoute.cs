@@ -202,6 +202,7 @@ namespace GatherChill.Scheduler.Tasks
 
             var spawned = NavmeshMovement.FindSpawnedNodeInGroup(currentNode);
             var approachLocation = spawned?.location ?? currentNode.Locations[NodeCheckIndex];
+            var liveNode = spawned?.node;
             if (spawned != null)
             {
                 var spawnedIndex = currentNode.Locations.IndexOf(spawned.Value.location);
@@ -212,19 +213,21 @@ namespace GatherChill.Scheduler.Tasks
             if (EzThrottler.Throttle("Travel Check throttle message"))
                 IceLogging.Verbose("Currently in travel check mode");
 
-            if (!GatherRouteNavigation.TryTravelWithinLoadRange(approachLocation))
+            if (!GatherRouteNavigation.TryTravelWithinLoadRange(approachLocation, liveNode?.Position))
             {
+                var travelAnchor = liveNode?.Position ?? approachLocation.Position;
                 if (EzThrottler.Throttle("Throttle message"))
-                    IceLogging.Verbose($"Traveling to node location. Distance: {Player.DistanceTo(approachLocation.Position):N1}");
+                    IceLogging.Verbose($"Traveling to node. Distance: {Player.DistanceTo(travelAnchor):N1}");
                 return false;
             }
 
-            var validNode = NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, approachLocation.Position);
+            liveNode ??= NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, approachLocation.Position)
+                ?? NavmeshMovement.FindSpawnedNodeInGroup(currentNode)?.node;
 
             if (EzThrottler.Throttle("IsNodeValid"))
-                IceLogging.Debug($"Node available at location {NodeCheckIndex} (within {NavmeshMovement.LoadRange}y): {validNode != null}");
+                IceLogging.Debug($"Node available at location {NodeCheckIndex} (within {NavmeshMovement.LoadRange}y): {liveNode != null}");
 
-            if (validNode == null)
+            if (liveNode == null)
             {
                 IceLogging.Debug($"Node not up at location {NodeCheckIndex}, trying next location");
                 GatherRouteNavigation.ResetValidationApproach();
@@ -232,13 +235,14 @@ namespace GatherChill.Scheduler.Tasks
                 return false;
             }
 
-            var nodeWorldPos = validNode.Position;
-            if (!GatherRouteNavigation.TryApproachGatherFan(approachLocation, nodeWorldPos))
+            if (!GatherRouteNavigation.TryApproachGatherFan(approachLocation, liveNode))
                 return false;
 
             P.navmesh.StopIfOwned();
 
-            if (NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, approachLocation.Position) == null)
+            liveNode = NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, approachLocation.Position)
+                ?? NavmeshMovement.FindSpawnedNodeInGroup(currentNode)?.node;
+            if (liveNode == null)
             {
                 IceLogging.Debug("Node despawned before approach finished, rescanning");
                 GatherRouteNavigation.ResetValidationApproach();
@@ -249,7 +253,8 @@ namespace GatherChill.Scheduler.Tasks
             GatherRouteNavigation.ResetValidationApproach();
             NodeCheckIndex = 0;
             IceLogging.Debug("Found available node, starting approach");
-            P.taskManager.Enqueue(() => CheckTravelKind(validNode), "Checking Travel Kind");
+            var nodeForApproach = liveNode;
+            P.taskManager.Enqueue(() => CheckTravelKind(nodeForApproach), "Checking Travel Kind");
             return true;
         }
 
@@ -269,23 +274,27 @@ namespace GatherChill.Scheduler.Tasks
                 return true;
 
             var currentNode = GatherRoute[RouteIndex];
-            var targetLocation = NavmeshMovement.MatchRouteLocation(currentNode, node.Position);
+            var nodePos = node.Position;
+            var targetLocation = NavmeshMovement.MatchRouteLocation(currentNode, nodePos);
             if (targetLocation == null)
             {
                 IceLogging.Error("Spawned node does not match any route location for this group");
                 return true;
             }
 
-            if (NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, targetLocation.Position) == null)
+            var liveNode = NavmeshMovement.GetAvailableNodeAtLocation(currentNode.NodeId, targetLocation.Position)
+                ?? NavmeshMovement.FindSpawnedNodeInGroup(currentNode)?.node;
+            if (liveNode == null)
             {
                 IceLogging.Debug("Node no longer available at matched location, rescanning");
                 GatherRouteNavigation.ResetValidationApproach();
                 return true;
             }
 
-            TargetFanPoint = NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position);
+            nodePos = liveNode.Position;
+            TargetFanPoint = NodeLocationExtensions.GetRandomFlightPosition(targetLocation, Player.Position, nodePos);
             GatherRouteNavigation.ResetInteractRetries();
-            GatherRouteNavigation.EnqueueApproach(node, currentNode, targetLocation);
+            GatherRouteNavigation.EnqueueApproach(liveNode, currentNode, targetLocation);
             return true;
         }
 
